@@ -7,6 +7,7 @@
 # Insecure registy access or secure connection to the image registry can be setup by configuring the 
 # OpenShift cluster resource.  For more information, refer to https://kabanero.io/guides/working-with-pipelines/#transport-layer-security-tls-verification-for-image-registry-access-in-pipelines
 #
+#
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
