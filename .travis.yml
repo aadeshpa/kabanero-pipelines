@@ -12,7 +12,7 @@ script:
 - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
      echo "The branch is master and now running the travis build";
      pwd;
-     ls -la ./pipelines/docker/;
+     ls -la ./pipelines/docker/kabanero-utils/;
      
   else
     echo "The branch is not master so not running anything...";
