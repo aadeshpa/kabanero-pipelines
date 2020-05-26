@@ -15,7 +15,7 @@ script:
      pwd; 
      ls -la;
      echo "Running Docker build";     
-     docker build -t aadeshpa/kabanero-utils:latest .
+     docker build -t aadeshpa/kabanero-utils:latest .;
   else
     echo "The branch is not master so not running anything...";
   fi
