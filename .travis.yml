@@ -3,8 +3,7 @@ language: bash
 sudo: true
 
 env:
-- IMAGE_NAME=aadeshpa/kabanero-utils
-- IMAGE_TAG_NAME=latest
+- IMAGE_NAME=aadeshpa/kabanero-utils IMAGE_TAG_NAME=latest
 
 services:
 - docker
