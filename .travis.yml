@@ -24,7 +24,7 @@ script:
      echo "Printing the docker images";
      docker images --digests;
      echo "Finding the digest value.....";
-     image_digest_value=$(docker images --no-trunc --quiet IMAGE_NAME:IMAGE_TAG_NAME);
+     image_digest_value=$(docker images --no-trunc --quiet $IMAGE_NAME:$IMAGE_TAG_NAME);
      echo "digest value=$image_digest_value";
   else
     echo "The branch is not master so not running anything...";
