@@ -9,5 +9,5 @@ script:
 - echo "Running my customized travis yaml file. Hello from Ashish..."
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
 - echo "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
-- if [ "$TRAVIS_BRANCH" == "master" ] && [ "TRAVIS_PULL_REQUEST"= "false" ]; then
+- if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
      echo "The branch is master and now running the travis build"; fi
