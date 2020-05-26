@@ -1,0 +1,9 @@
+language: bash
+
+sudo: true
+
+services:
+- docker
+
+script:
+- echo "Running my customized travis yaml file. Hello from Ashish"
