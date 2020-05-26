@@ -2,6 +2,10 @@ language: bash
 
 sudo: true
 
+env:
+  - IMAGE_NAME=aadeshpa/kabanero-utils
+  - IMAGE_TAG_NAME=latest
+
 services:
 - docker
 
@@ -15,12 +19,12 @@ script:
      pwd; 
      ls -la;
      echo "Running Docker build";     
-     docker build -t aadeshpa/kabanero-utils:latest .;
+     docker build -t $IMAGE_NAME:$IMAGE_TAG_NAME .;
      echo "docker build completed successfully.";
      echo "Printing the docker images";
      docker images --digests;
      echo "Finding the digest value.....";
-     image_digest_value=$(docker images --no-trunc --quiet aadeshpa/kabanero-utils:latest);
+     image_digest_value=$(docker images --no-trunc --quiet IMAGE_NAME:IMAGE_TAG_NAME);
      echo "digest value=$image_digest_value";
   else
     echo "The branch is not master so not running anything...";
