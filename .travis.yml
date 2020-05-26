@@ -16,6 +16,12 @@ script:
      ls -la;
      echo "Running Docker build";     
      docker build -t aadeshpa/kabanero-utils:latest .;
+     echo "docker build completed successfully."
+     echo "Printing the docker images"
+     docker images --digests
+     echo "Finding the digest value....."
+     image_digest_value=$(docker images --no-trunc --quiet aadeshpa/kabanero-utils:latest);
+     echo "digest value=$image_digest_value";
   else
     echo "The branch is not master so not running anything...";
   fi
