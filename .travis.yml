@@ -11,6 +11,7 @@ script:
 - echo "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
 - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
      echo "The branch is master and now running the travis build";
+     ls -la;
   else
     echo "The branch is not master so not running anything...";
   fi
