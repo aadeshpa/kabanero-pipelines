@@ -13,7 +13,7 @@ script:
      echo "The branch is master and now running the travis build";
      cd ./pipelines/docker/kabanero-utils/;
      pwd; 
-     ls -la ./pipelines/docker/kabanero-utils/;
+     ls -la;
      echo "Running Docker build";     
      docker build -t aadeshpa/kabanero-utils:latest -f Dockerfile .
   else
