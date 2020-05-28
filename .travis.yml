@@ -18,12 +18,12 @@ script:
      pwd; 
      ls -la;
      echo "Running Docker build";     
-     docker build -t $IMAGE_NAME:$IMAGE_TAG_NAME .;
+     docker build -t $USER_NAME/$IMAGE_NAME:$IMAGE_TAG_NAME .;
      echo "docker build completed successfully.";
      echo "Printing the docker images";
      docker images --digests;
      echo "Finding the digest value.....";
-     image_digest_value=$(docker images --no-trunc --quiet $IMAGE_NAME:$IMAGE_TAG_NAME);
+     image_digest_value=$(docker images --no-trunc --quiet $USER_NAME/$IMAGE_NAME:$IMAGE_TAG_NAME);
      echo "digest value=$image_digest_value";
      
      echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME ";
