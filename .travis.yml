@@ -9,7 +9,6 @@ services:
 - docker
 
 before_install:
-  - sudo apt-get -y install skopeo
   - sudo apt-get -y install jq
   
 script:
@@ -36,6 +35,7 @@ script:
      echo "DOCKER_USERNAME=$DOCKER_USERNAME";
      echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin;
      docker push $IMAGE_NAME:$IMAGE_TAG_NAME;
+     docker images --digests;
      
   else
     echo "The branch is not master so not running anything...";
