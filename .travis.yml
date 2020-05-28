@@ -3,7 +3,7 @@ language: bash
 sudo: true
 
 env:
-- IMAGE_NAME=aadeshpa/kabanero-utils IMAGE_TAG_NAME=latest
+- IMAGE_NAME=aadeshpa/kabanero-utils IMAGE_TAG_NAME=latest USER_NAME=aadeshpa
 
 services:
 - docker
@@ -25,6 +25,11 @@ script:
      echo "Finding the digest value.....";
      image_digest_value=$(docker images --no-trunc --quiet $IMAGE_NAME:$IMAGE_TAG_NAME);
      echo "digest value=$image_digest_value";
+     
+     echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME "
+     echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin;
+	docker push $(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME;
+     
   else
     echo "The branch is not master so not running anything...";
   fi
