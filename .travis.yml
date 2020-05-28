@@ -39,7 +39,7 @@ script:
      echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin;
      docker push $IMAGE_NAME:$IMAGE_TAG_NAME;
      docker images --digests;
-     image_digest_value_withquote=docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$IMAGE_TAG_NAME | jq 'values[0]';
+     image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$IMAGE_TAG_NAME | jq 'values[0]');
      echo "image_digest_value_withquote=$image_digest_value_withquote";
   else
     echo "The branch is not master so not running anything...";
