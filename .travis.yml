@@ -27,9 +27,11 @@ script:
      docker images --digests;
      echo "Finding the digest value.....";
      image_digest_value=$(docker images --no-trunc --quiet $IMAGE_NAME:$IMAGE_TAG_NAME);
+     image_digest_value_withquote=docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$IMAGE_TAG_NAME | jq 'values[0]';
      echo "printing all images";
      docker images --digests;
      echo "digest value=$image_digest_value";
+     echo "image_digest_value_withquote=$image_digest_value_withquote";
      
      echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME ";
      echo "DOCKER_USERNAME=$DOCKER_USERNAME";
