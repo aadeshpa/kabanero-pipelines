@@ -26,9 +26,9 @@ script:
      image_digest_value=$(docker images --no-trunc --quiet $IMAGE_NAME:$IMAGE_TAG_NAME);
      echo "digest value=$image_digest_value";
      
-     echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME "
+     echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME ";
      echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin;
-	docker push $(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME;
+     docker push $(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME;
      
   else
     echo "The branch is not master so not running anything...";
