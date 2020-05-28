@@ -10,6 +10,7 @@ services:
 
 before_install:
   - sudo apt-get -y install jq
+  - sudo apt-get -y install 'libboost1.58-tools-dev'
   
 script:
 - echo "Running my customized travis yaml file. Hello from Ashish..."
