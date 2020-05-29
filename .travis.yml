@@ -16,7 +16,6 @@ script:
 - echo "Running my customized travis yaml file. Hello from Ashish..."
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
 - echo "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
-- echo "TRAVIS_TAG=$TRAVIS_TAG"
 - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
      echo "The branch is master and now running the travis build";
      cd ./pipelines/docker/kabanero-utils/;
@@ -27,28 +26,28 @@ script:
      echo "docker build completed successfully.";
      echo "Printing the docker images";
      docker images --digests;
+     echo "Finding the digest value.....";
+     image_digest_value=$(docker images --no-trunc --quiet $IMAGE_NAME:$IMAGE_TAG_NAME);
      
      echo "printing all images";
      docker images --digests;
-       
-     echo "Pushing the image $IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME ";
+     echo "digest value=$image_digest_value";
+     
+     
+     echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME ";
      echo "DOCKER_USERNAME=$DOCKER_USERNAME";
      echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin;
      docker push $IMAGE_NAME:$IMAGE_TAG_NAME;
      docker images --digests;
-     
-     #Fetch the digest value
      image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$IMAGE_TAG_NAME | jq 'values[0]');
      echo "image_digest_value_withquote=$image_digest_value_withquote";
      image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
      echo "image_digest_value=$image_digest_value";
      
      echo "Trying to replace new digest value everywhere";
-     #This takes to /home/travis/build/aadeshpa/kabanero-pipelines/pipelines/
      cd ../../;
      pwd;
      ls -la;
-     #Find and replace the image reference from 'latest' to pushed image digest value as the  imagetag in all tasks.
      find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|'"$image_digest_value"'|g' {} +;
      echo "Replaced the image digest value";
      echo "**build-push-task-dummy2.yaml*";
@@ -58,5 +57,5 @@ script:
      cat incubator/events/build-push-task-dummy4.yaml;
      echo "***";
   else
-    echo "The branch is not master so not running anything..";
+    echo "The branch is not master so not running anything...";
   fi
