@@ -41,10 +41,13 @@ script:
      docker images --digests;
      image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$IMAGE_TAG_NAME | jq 'values[0]');
      echo "image_digest_value_withquote=$image_digest_value_withquote";
-     image_digest_value_withoutquote=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-     echo "image_digest_value_withoutquote=$image_digest_value_withoutquote";
+     image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
+     echo "image_digest_value=$image_digest_value";
      
      echo "Trying to replace new digest value everywhere";
+     cd ../../;
+     pwd;
+     ls -la;
   else
     echo "The branch is not master so not running anything...";
   fi
