@@ -50,6 +50,9 @@ script:
      ls -la;
      find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|$image_digest_value|g' {} +;
      echo "Replaced the image digest value";
+     echo "**build-push-task-dummy2.yaml*";
+     cat incubator/build-push-task-dummy2.yaml;
+     echo "***";
   else
     echo "The branch is not master so not running anything...";
   fi
