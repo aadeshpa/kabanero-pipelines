@@ -58,5 +58,5 @@ script:
      cat incubator/events/build-push-task-dummy4.yaml;
      echo "***";
   else
-    echo "The branch is not master so not running anything...";
+    echo "The branch is not master so not running anything.....";
   fi
