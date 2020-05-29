@@ -26,19 +26,17 @@ script:
      echo "docker build completed successfully.";
      echo "Printing the docker images";
      docker images --digests;
-     echo "Finding the digest value.....";
-     image_digest_value=$(docker images --no-trunc --quiet $IMAGE_NAME:$IMAGE_TAG_NAME);
      
      echo "printing all images";
      docker images --digests;
-     echo "digest value=$image_digest_value";
-     
-     
-     echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME ";
+       
+     echo "Pushing the image $IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME ";
      echo "DOCKER_USERNAME=$DOCKER_USERNAME";
      echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin;
      docker push $IMAGE_NAME:$IMAGE_TAG_NAME;
      docker images --digests;
+     
+     #Fetch the digest value
      image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$IMAGE_TAG_NAME | jq 'values[0]');
      echo "image_digest_value_withquote=$image_digest_value_withquote";
      image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
@@ -48,6 +46,7 @@ script:
      cd ../../;
      pwd;
      ls -la;
+     #Find and replace the image reference from 'latest' to pushed image digest value as the  imagetag in all tasks.
      find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|'"$image_digest_value"'|g' {} +;
      echo "Replaced the image digest value";
      echo "**build-push-task-dummy2.yaml*";
