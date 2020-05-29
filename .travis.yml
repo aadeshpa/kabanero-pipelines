@@ -44,6 +44,7 @@ script:
      echo "image_digest_value=$image_digest_value";
      
      echo "Trying to replace new digest value everywhere";
+     #This takes to /home/travis/build/aadeshpa/kabanero-pipelines/pipelines/
      cd ../../;
      pwd;
      ls -la;
