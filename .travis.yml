@@ -48,7 +48,8 @@ script:
      cd ../../;
      pwd;
      ls -la;
-     find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|$image_digest_value|g' {} +
+     find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|$image_digest_value|g' {} +;
+     echo "Replaced the image digest value";
   else
     echo "The branch is not master so not running anything...";
   fi
