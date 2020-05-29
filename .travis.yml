@@ -41,7 +41,7 @@ script:
      docker images --digests;
      image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$IMAGE_TAG_NAME | jq 'values[0]');
      echo "image_digest_value_withquote=$image_digest_value_withquote";
-     image_digest_value_withoutquote=$(sed -e 's/^"//' -e 's/"$//' <<<"$opt")
+     image_digest_value_withoutquote=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote")
      echo "image_digest_value_withoutquote=$image_digest_value_withoutquote";
      
      echo "Trying to replace new digest value everywhere";
