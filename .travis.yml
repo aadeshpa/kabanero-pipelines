@@ -9,7 +9,6 @@ dist: bionic
 
 before_install:
   - sudo apt-get -y install jq
-  - sudo apt-get -y install 'libboost1.58-tools-dev'
   
 # note before_deploy will run before each deploy provider
 before_deploy:
