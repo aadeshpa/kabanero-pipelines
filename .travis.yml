@@ -12,6 +12,8 @@ before_install:
   
 script:
   - echo "in script section."
+  - echo "trying to run script ./ci/package.sh";
+    ./ci/package.sh;
 
 # note before_deploy will run before each deploy provider
 before_deploy:
