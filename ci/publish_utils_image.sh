@@ -19,7 +19,7 @@ if [ ! -z "$TRAVIS_TAG" ]; then
       echo "printing all images"
       docker images --digests
    
-      echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$TRAVIS_TAG "
+      echo "Pushing the image $IMAGE_NAME:$IMAGE_TAG_NAME to docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG "
       echo "DOCKER_USERNAME=$DOCKER_USERNAME"
       echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
       docker push $IMAGE_NAME:$TRAVIS_TAG
