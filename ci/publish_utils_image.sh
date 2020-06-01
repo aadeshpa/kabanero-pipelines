@@ -18,6 +18,12 @@ if [ ! -z "$TRAVIS_TAG" ]; then
 
    echo "printing all images";
    docker images --digests;
+   
+   echo "Pushing the image$IMAGE_NAME:$IMAGE_TAG_NAME) to docker.io/$(USER_NAME)/$IMAGE_NAME:$IMAGE_TAG_NAME ";
+   echo "DOCKER_USERNAME=$DOCKER_USERNAME";
+   echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin;
+   docker push $IMAGE_NAME:$IMAGE_TAG_NAME;
+   docker images --digests;
 else
        echo "It is not a tagged commit or, the TRAVIS_TAG=$TRAVIS_TAG is empty"
 fi
