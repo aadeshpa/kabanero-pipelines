@@ -13,6 +13,8 @@ before_install:
 script:
   - echo "in script section."
   - echo "trying to run script ./ci/publish_utils_image.sh";
+    pwd;
+    ls -la;
     ./ci/publish_utils_image.sh;
 
 # note before_deploy will run before each deploy provider
