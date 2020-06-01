@@ -13,7 +13,7 @@ if [ ! -z "$TRAVIS_TAG" ]; then
    
    echo "Running Docker build"  
    docker build -t $IMAGE_NAME:$TRAVIS_TAG .
-   if [ $? != 0 ]; then
+   if [ $? == 0 ]; then
       echo "Docker Image $IMAGE_NAME:$TRAVIS_TAG was build successfully"
      
       echo "printing all images"
