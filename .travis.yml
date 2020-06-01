@@ -21,10 +21,10 @@ script:
 # note before_deploy will run before each deploy provider
 before_deploy:
   - echo "TRAVIS_TAG=$TRAVIS_TAG";
-    if [[ (! -z $TRAVIS_TAG) && ("$TRAVIS_PULL_REQUEST" = "false" )]]; then
+    if [[ (! -z $TRAVIS_TAG) && ("$TRAVIS_PULL_REQUEST" = "false" )]]; then;
        echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty.";
        echo "calling the build and push script..";
-    fi
+    fi;
   - . ./ci/package.sh
 
 deploy:
