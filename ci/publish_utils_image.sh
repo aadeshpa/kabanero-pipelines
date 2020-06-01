@@ -30,6 +30,10 @@ if [ ! -z "$TRAVIS_TAG" ]; then
    image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
    echo "image_digest_value=$image_digest_value";
      
+   echo "Trying to replace new digest value everywhere";
+   cd ../../;
+   pwd;
+   ls -la;
 else
        echo "It is not a tagged commit or, the TRAVIS_TAG=$TRAVIS_TAG is empty"
 fi
