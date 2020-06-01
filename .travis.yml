@@ -16,7 +16,7 @@ script:
        echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty.";
        echo "calling the build and push script..";
     else
-       echo "It is not a tagged commit or, the TRAVIS_TAG=$TRAVIS_TAG is empty"
+       echo "It is not a tagged commit or, the TRAVIS_TAG=$TRAVIS_TAG is empty";
     fi
 # note before_deploy will run before each deploy provider
 before_deploy:
