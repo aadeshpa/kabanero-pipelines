@@ -12,7 +12,7 @@ if [ ! -z "$TRAVIS_TAG" ]; then
    ls -la
    
    echo "Running Docker build"  
-   docker build -t $IMAGE_NAME:$IMAGE_TAG_NAME .
+   docker build -t $IMAGE_NAME:$TRAVIS_TAG .
    echo "docker build completed successfully."
    echo "Printing the docker images"
 
