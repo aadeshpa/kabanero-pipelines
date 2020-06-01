@@ -6,12 +6,17 @@ go:
 os: linux
 dist: bionic
 
+
+before_install:
+  - sudo apt-get -y install jq
+  - sudo apt-get -y install 'libboost1.58-tools-dev'
+  
 # note before_deploy will run before each deploy provider
 before_deploy:
   - echo "TRAVIS_TAG=$TRAVIS_TAG";
     if [[ (! -z $TRAVIS_TAG) && ("$TRAVIS_PULL_REQUEST" = "false" )]]; then
-       echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty."
-       echo "calling the build and push script.."
+       echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty.";
+       echo "calling the build and push script..";
     fi
   - . ./ci/package.sh
 
