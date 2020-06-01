@@ -12,7 +12,7 @@ before_install:
   
 script:
   - echo "TRAVIS_TAG=$TRAVIS_TAG";
-  - if [ ! -z "$TRAVIS_TAG" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+  - if [ ! -z "$TRAVIS_TAG" ]; then
        echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty.";
        echo "calling the build and push script..";
        . ./ci/publish_utils_image.sh;
