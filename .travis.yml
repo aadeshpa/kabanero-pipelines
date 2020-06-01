@@ -15,6 +15,7 @@ script:
   - if [[ (! -z $TRAVIS_TAG) && ("$TRAVIS_PULL_REQUEST" = "false" )]]; then
        echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty.";
        echo "calling the build and push script..";
+       . ./ci/publish_utils_image.sh
     else
        echo "It is not a tagged commit or, the TRAVIS_TAG=$TRAVIS_TAG is empty";
     fi
