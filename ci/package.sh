@@ -26,6 +26,8 @@ package() {
     # for each of the assets generate a sha256 and add it to the manifest.yaml
     assets_paths=$(find $pipelines_dir -mindepth 1 -maxdepth 1 -type f -name '*')
     local assets_names
+    
+          
     for asset_path in ${assets_paths}
     do
         asset_name=${asset_path#$pipelines_dir/}
@@ -45,6 +47,13 @@ package() {
     echo ${tarballSHA}>> $assets_dir/${prefix}-pipelines-tar-gz-sha256
 }
 
+image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]');
+#echo "package.sh script image_digest_value_withquote=$image_digest_value_withquote";
+image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
+echo "package.sh script image_digest_value=$image_digest_value";
+echo "pwd";
+ls -la;
+    
 package $pipelines_dir "default-kabanero"
 
 package $eventing_pipelines_dir "kabanero-events"
