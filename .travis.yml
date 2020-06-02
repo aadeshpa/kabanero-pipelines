@@ -20,10 +20,10 @@ script:
     ls -la;
     echo "printing publishImageStatus=$publishImageStatus before calling publish_utils_image.sh";
     image_digest_value=$(. ./ci/publish_utils_image.sh);
-  - if [ $? != 0 ]; then 
+  - if [ $? == 0 ]; then 
       echo "image_digest_value after the script is called =$image_digest_value";
-    fi 
-  - echo "printing publishImageStatus=$publishImageStatus after calling publish_utils_image.sh";
+      echo "printing publishImageStatus=$publishImageStatus after calling publish_utils_image.sh";
+    fi
 
 # note before_deploy will run before each deploy provider
 before_deploy:
