@@ -5,7 +5,7 @@ set -e
 
 
 echo "TRAVIS_TAG=$TRAVIS_TAG"
-echo "Env variable publishImageStatus=$publishImageStatus"
+echo "Env variable from within the script publishImageStatus=${publishImageStatus}"
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
    #echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty."
    cd ./pipelines/docker/kabanero-utils/
