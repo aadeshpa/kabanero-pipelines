@@ -48,7 +48,6 @@ package() {
 }
 
 image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]');
-#echo "package.sh script image_digest_value_withquote=$image_digest_value_withquote";
 image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
 echo "package.sh script image_digest_value=$image_digest_value";
 echo "pwd";
