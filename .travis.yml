@@ -31,6 +31,8 @@ script:
   - if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
        echo "executing package.sh";
        ./ci/package.sh;
+    else
+       echo "not able to execute package.sh"
     fi
 
 # note before_deploy will run before each deploy provider
