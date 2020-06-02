@@ -28,10 +28,12 @@ script:
     #else
     #  echo "something wrong after the script call";
     #fi
+    
+    ./ci/package.sh
 
 # note before_deploy will run before each deploy provider
 before_deploy:
-  - . ./ci/package.sh
+  - #. ./ci/package.sh
 
 deploy:
   provider: releases
