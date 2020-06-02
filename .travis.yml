@@ -23,6 +23,8 @@ script:
   - if [ $? == 0 ]; then 
       echo "image_digest_value after the script is called =$image_digest_value";
       echo "printing publishImageStatus=$publishImageStatus after calling publish_utils_image.sh";
+    else
+      echo "something wrong after the script call";
     fi
 
 # note before_deploy will run before each deploy provider
