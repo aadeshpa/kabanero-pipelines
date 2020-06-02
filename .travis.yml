@@ -19,7 +19,7 @@ script:
     pwd;
     ls -la;
     echo "printing publishImageStatus=$publishImageStatus before calling publish_utils_image.sh";
-    image_digest_value=( ./ci/publish_utils_image.sh );
+    image_digest_value=$(./ci/publish_utils_image.sh);
     echo "image_digest_value after the script is called =$image_digest_value"
     echo "printing publishImageStatus=$publishImageStatus after calling publish_utils_image.sh";
 
