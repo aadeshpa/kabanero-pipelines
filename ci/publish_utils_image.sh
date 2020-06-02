@@ -5,7 +5,7 @@ echo "Running publish_utils_image.sh script"
 
 
 echo "TRAVIS_TAG=$TRAVIS_TAG"
-if [ ! -z "$TRAVIS_TAG" ]; then
+if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
    echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty."
    cd ./pipelines/docker/kabanero-utils/
    pwd
@@ -31,6 +31,7 @@ if [ ! -z "$TRAVIS_TAG" ]; then
           echo "image_digest_value_withquote=$image_digest_value_withquote"
           image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote")
           echo "image_digest_value=$image_digest_value"
+          publishImageStatus=true;
       else
         echo "[ERROR] The docker push failed for this image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG, please check the logs"
         exit 1
