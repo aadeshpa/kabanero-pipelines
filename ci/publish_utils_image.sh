@@ -33,6 +33,7 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
           image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote")
           #echo "image_digest_value=$image_digest_value"
           publishImageStatus=true
+          echo "publishImageStatus = ${publishImageStatus} after the digest value found."
           echo "$image_digest_value"
           
       else
