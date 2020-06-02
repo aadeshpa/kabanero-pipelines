@@ -28,8 +28,10 @@ script:
     #else
     #  echo "something wrong after the script call";
     #fi
-    
-    ./ci/package.sh
+  - if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
+       echo "executing package.sh";
+       ./ci/package.sh;
+    fi
 
 # note before_deploy will run before each deploy provider
 before_deploy:
