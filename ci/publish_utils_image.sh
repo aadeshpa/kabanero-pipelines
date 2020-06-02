@@ -28,9 +28,10 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
           docker images --digests
    
           image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]')
-          echo "image_digest_value_withquote=$image_digest_value_withquote"
+          #echo "image_digest_value_withquote=$image_digest_value_withquote"
           image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote")
-          echo "image_digest_value=$image_digest_value"
+          #echo "image_digest_value=$image_digest_value"
+          echo "$image_digest_value"
           publishImageStatus=true;
       else
         echo "[ERROR] The docker push failed for this image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG, please check the logs"
