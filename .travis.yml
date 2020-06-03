@@ -14,13 +14,7 @@ before_install:
   - sudo apt-get -y install jq
   
 script:
-  - echo "in script section."
-  - echo "trying to run script ./ci/publish_utils_image.sh";
-    pwd;
-    ls -la;
-    echo "printing publishImageStatus=$publishImageStatus before calling publish_utils_image.sh";
-    ./ci/publish_utils_image.sh;
-    echo "printing publishImageStatus=$publishImageStatus after calling publish_utils_image.sh";
+  - ./ci/publish_utils_image.sh;
 
 # note before_deploy will run before each deploy provider
 before_deploy:
