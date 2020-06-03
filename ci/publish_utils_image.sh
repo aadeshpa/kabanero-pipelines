@@ -17,7 +17,7 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
    #echo "Running Docker build"  
    docker build -t $IMAGE_NAME:$TRAVIS_TAG .
    if [ $? == 0 ]; then
-      echo "Docker image $IMAGE_NAME:$TRAVIS_TAG was build successfully"
+      echo "[INFO] Docker image $IMAGE_NAME:$TRAVIS_TAG was build successfully"
      
       #echo "printing all images"
       #docker images --digests
