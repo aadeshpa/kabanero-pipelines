@@ -34,7 +34,7 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
           #echo "image_digest_value=$image_digest_value"
           #echo "$image_digest_value"      
       else
-        echo "[ERROR] The docker push failed for this image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG, please check the logs";
+        echo "[ERROR] The docker push failed for this image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG, please check the logs"
         exit 1
       fi
      
