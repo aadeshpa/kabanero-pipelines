@@ -21,18 +21,18 @@ script:
     echo "printing publishImageStatus=$publishImageStatus before calling publish_utils_image.sh";
     ./ci/publish_utils_image.sh;
     echo "printing publishImageStatus=$publishImageStatus after calling publish_utils_image.sh";
-  - if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
-       echo "executing package.sh";
-       ./ci/package.sh;
-       echo "ashish";
-    else
-       echo "ashish";
-       echo "not able to execute package.sh";
-    fi
+  - #if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
+    #   echo "executing package.sh";
+    #   ./ci/package.sh;
+    #   echo "ashish";
+    #else
+    #   echo "ashish";
+    #   echo "not able to execute package.sh";
+    #fi
 
 # note before_deploy will run before each deploy provider
 before_deploy:
-  - #. ./ci/package.sh
+  - . ./ci/package.sh
 
 deploy:
   provider: releases
