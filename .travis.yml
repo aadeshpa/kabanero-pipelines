@@ -24,7 +24,9 @@ script:
   - if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
        echo "executing package.sh";
        ./ci/package.sh;
+       echo "ashish";
     else
+       echo "ashish";
        echo "not able to execute package.sh";
     fi
 
