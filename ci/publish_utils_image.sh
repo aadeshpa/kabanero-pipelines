@@ -1,16 +1,17 @@
 #!/bin/bash
 set -e
 
-#echo "Running publish_utils_image.sh script"
+# This script will verify and run if TRAVIS_TAG is present which is the case only when a new releasecut takes place.
+# Also along with the TRAVIS_TAG value, it checks if the travis settings has env variables DOCKER_USERNAME and DOCKER_PASSWORD
+# set, to get access to the dockerhub repository for pushing the image if built.
+# The script will build and push the image with the Travis env variables as
+# docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG
 
 
 echo "TRAVIS_TAG=$TRAVIS_TAG"
 #echo "Env variable from within the script publishImageStatus=${publishImageStatus}"
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
-   #echo "TRAVIS_TAG=$TRAVIS_TAG found and not empty."
    cd ./pipelines/docker/kabanero-utils/
-   #pwd
-   #ls -la
    
    #echo "Running Docker build"  
    docker build -t $IMAGE_NAME:$TRAVIS_TAG .
@@ -43,5 +44,5 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
       exit 1
    fi
 else
-       echo "It is not a tagged commit or, the TRAVIS_TAG=$TRAVIS_TAG is empty"
+       echo "[INFO] This travis build is not tagged with the TRAVIS_TAG=$TRAVIS_TAG, hence skipping the build and publish of the image $DOCKER_USERNAME/$IMAGE_NAME"
 fi
