@@ -9,6 +9,7 @@ set -e
 
 
 echo "TRAVIS_TAG=$TRAVIS_TAG"
+echo "[INFO] Executing the script /ci/publish_utils_image.sh for TRAVIS_TAG=$TRAVIS_TAG"
 #echo "Env variable from within the script publishImageStatus=${publishImageStatus}"
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
    cd ./pipelines/docker/kabanero-utils/
@@ -44,5 +45,5 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
       exit 1
    fi
 else
-       echo "[INFO] This travis build is not tagged with the TRAVIS_TAG=$TRAVIS_TAG, hence skipping the build and publish of the image $DOCKER_USERNAME/$IMAGE_NAME"
+       echo "[INFO] This travis build is not for a tagged TRAVIS_TAG and its empty, hence skipping the build and publish of the image $DOCKER_USERNAME/$IMAGE_NAME"
 fi
