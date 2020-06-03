@@ -47,23 +47,21 @@ package() {
     echo ${tarballSHA}>> $assets_dir/${prefix}-pipelines-tar-gz-sha256
 }
 
+#Fetching the utils image digest value for the image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG.
+echo "[INFO] Fetching the image digest value for image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
 image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]');
 image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-echo "package.sh script image_digest_value=$image_digest_value";
-
-echo "Trying to replace new digest value everywhere";
+echo "[INFO] Trying to replace image_digest_value=$image_digest_value in all the pipelines yaml files";
 pwd
 ls -la
 find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|'"$image_digest_value"'|g' {} +
-echo "Sed command completed successfully"
-echo "***"
-echo "cat experimental/gitops/build-push-task-dummy3.yaml"
-cat ./pipelines/experimental/gitops/build-push-task-dummy3.yaml
-echo "***cat ./incubator/build-push-task-dummy2.yaml"
-cat ./pipelines/incubator/build-push-task-dummy2.yaml
-echo "** cat incubator/events/build-push-task-dummy4.yaml*"
-cat ./pipelines/incubator/events/build-push-task-dummy4.yaml
-echo "***"
+if [ $? == 0 ]; then
+  echo "[INFO] Updated image_digest_value=$image_digest_value in all the pipelines yaml files command completed successfully"
+else
+  echo "[ERROR] There was some error in updating the image digest value image_digest_value=$image_digest_value in all the pipelines yaml files."
+  exit 1
+fi
+
      
 package $pipelines_dir "default-kabanero"
 
