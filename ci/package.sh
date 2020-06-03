@@ -50,9 +50,23 @@ package() {
 image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]');
 image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
 echo "package.sh script image_digest_value=$image_digest_value";
-echo "pwd";
-ls -la;
-    
+
+echo "Trying to replace new digest value everywhere";
+#navigating back to /pipelines folder from /pipelines/docker/kabanero-utils/
+cd ../../
+pwd
+ls -la
+find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|'"$image_digest_value"'|g' {} +
+echo "Sed command completed successfully"
+echo "***"
+echo "cat experimental/gitops/build-push-task-dummy3.yaml"
+cat ./experimental/gitops/build-push-task-dummy3.yaml
+echo "***cat ./incubator/build-push-task-dummy2.yaml"
+cat ./incubator/build-push-task-dummy2.yaml
+echo "** cat incubator/events/build-push-task-dummy4.yaml*"
+cat ./incubator/events/build-push-task-dummy4.yaml
+echo "***"
+     
 package $pipelines_dir "default-kabanero"
 
 package $eventing_pipelines_dir "kabanero-events"
