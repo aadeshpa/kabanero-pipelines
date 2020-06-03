@@ -7,8 +7,6 @@ set -e
 # The script will build and push the image with the Travis env variables as
 # docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG
 
-
-echo "TRAVIS_TAG=$TRAVIS_TAG"
 echo "[INFO] Executing the script /ci/publish_utils_image.sh for TRAVIS_TAG=$TRAVIS_TAG"
 #echo "Env variable from within the script publishImageStatus=${publishImageStatus}"
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
