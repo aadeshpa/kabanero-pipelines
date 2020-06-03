@@ -52,8 +52,6 @@ image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquo
 echo "package.sh script image_digest_value=$image_digest_value";
 
 echo "Trying to replace new digest value everywhere";
-#navigating back to /pipelines folder from /pipelines/docker/kabanero-utils/
-cd ../../
 pwd
 ls -la
 find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|'"$image_digest_value"'|g' {} +
