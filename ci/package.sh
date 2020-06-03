@@ -15,6 +15,8 @@ gitops_pipelines_dir=$base_dir/pipelines/experimental/gitops
 assets_dir=$base_dir/ci/assets
 mkdir -p $assets_dir
 
+image_original_string=kabanero/kabanero-utils:latest
+
 package() {
     local pipelines_dir=$1
     local prefix=$2
@@ -50,17 +52,16 @@ package() {
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
  #Fetching the utils image digest value for the image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG.
  echo "[INFO] Fetching the image digest value for image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
- image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]');
+ image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]'); 
  #This is to remove double quotes at the beginning and the end of the digest value found by above command
  image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
- echo "[INFO] Trying to replace image : kabanero/kabanero-utils:latest as $image_digest_value in all the pipelines yaml files";
- pwd
- ls -la
- find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|'"$image_digest_value"'|g' {} +
+ 
+ echo "[INFO] Trying to replace image : image_original_string as $image_digest_value in all the pipelines yaml files";
+ find ./ -type f -name '*.yaml' -exec sed -i 's|$image_original_string|'"$image_digest_value"'|g' {} +
  if [ $? == 0 ]; then
-   echo "[INFO] Updated image : kabanero/kabanero-utils:latest as $image_digest_value in all the pipelines yaml files successfully"
+   echo "[INFO] Updated image : $image_original_string as $image_digest_value in all the pipelines yaml files successfully"
  else
-   echo "[ERROR] There was some error in updating the image : kabanero/kabanero-utils:latest as $image_digest_value in all the pipelines yaml files."
+   echo "[ERROR] There was some error in updating the image : $image_original_string as $image_digest_value in all the pipelines yaml files."
    exit 1
  fi
 else
