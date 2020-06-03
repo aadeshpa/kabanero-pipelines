@@ -56,7 +56,7 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
  #This is to remove double quotes at the beginning and the end of the digest value found by above command
  image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
  
- echo "[INFO] Trying to replace image : image_original_string as $image_digest_value in all the pipelines yaml files";
+ echo "[INFO] Trying to replace image : $image_original_string as $image_digest_value in all the pipelines yaml files";
  find ./ -type f -name '*.yaml' -exec sed -i 's|$image_original_string|'"$image_digest_value"'|g' {} +
  if [ $? == 0 ]; then
    echo "[INFO] Updated image : $image_original_string as $image_digest_value in all the pipelines yaml files successfully"
