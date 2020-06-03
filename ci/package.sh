@@ -58,11 +58,11 @@ find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|'"
 echo "Sed command completed successfully"
 echo "***"
 echo "cat experimental/gitops/build-push-task-dummy3.yaml"
-cat ./experimental/gitops/build-push-task-dummy3.yaml
+cat ./pipelines/experimental/gitops/build-push-task-dummy3.yaml
 echo "***cat ./incubator/build-push-task-dummy2.yaml"
-cat ./incubator/build-push-task-dummy2.yaml
+cat ./pipelines/incubator/build-push-task-dummy2.yaml
 echo "** cat incubator/events/build-push-task-dummy4.yaml*"
-cat ./incubator/events/build-push-task-dummy4.yaml
+cat ./pipelines/incubator/events/build-push-task-dummy4.yaml
 echo "***"
      
 package $pipelines_dir "default-kabanero"
