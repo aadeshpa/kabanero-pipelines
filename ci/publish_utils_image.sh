@@ -25,17 +25,16 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
       echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
       docker push $IMAGE_NAME:$TRAVIS_TAG
       if [ $? == 0 ]; then
-          #echo "[INFO] The docker image $IMAGE_NAME:$TRAVIS_TAG was successfully pushed to docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
+          echo "[INFO] The docker image $IMAGE_NAME:$TRAVIS_TAG was successfully pushed to docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
           #docker images --digests
    
           #image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]')
           #echo "image_digest_value_withquote=$image_digest_value_withquote"
           #image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote")
           #echo "image_digest_value=$image_digest_value"
-          #echo "$image_digest_value"
-          
+          #echo "$image_digest_value"      
       else
-        echo "[ERROR] The docker push failed for this image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG, please check the logs"
+        echo "[ERROR] The docker push failed for this image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG, please check the logs";
         exit 1
       fi
      
