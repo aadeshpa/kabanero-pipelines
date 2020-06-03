@@ -58,9 +58,9 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
  ls -la
  find ./ -type f -name '*.yaml' -exec sed -i 's|kabanero/kabanero-utils:latest|'"$image_digest_value"'|g' {} +
  if [ $? == 0 ]; then
-   echo "[INFO] Updated image_digest_value=$image_digest_value in all the pipelines yaml files successfully"
+   echo "[INFO] Updated image : kabanero/kabanero-utils:latest as $image_digest_value in all the pipelines yaml files successfully"
  else
-   echo "[ERROR] There was some error in updating the image digest value image_digest_value=$image_digest_value in all the pipelines yaml files."
+   echo "[ERROR] There was some error in updating the image : kabanero/kabanero-utils:latest as $image_digest_value in all the pipelines yaml files."
    exit 1
  fi
 else
