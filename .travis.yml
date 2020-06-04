@@ -1,8 +1,5 @@
 language: generic
 
-env:
-- IMAGE_NAME=kabanero-utils
-
 go:
   - 1.12.x
 
