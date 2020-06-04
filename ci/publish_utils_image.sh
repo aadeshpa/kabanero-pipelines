@@ -34,5 +34,5 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
       exit 1
    fi
 else
-       echo "[INFO] This travis build is not for a tagged TRAVIS_TAG and its empty, hence skipping the build and publish of the image $DOCKER_USERNAME/$IMAGE_NAME"
+       echo "[INFO] This travis build is not for a tagged TRAVIS_TAG and its empty, hence skipping the build and publish of the image $IMAGE_NAME"
 fi
