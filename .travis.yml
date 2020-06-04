@@ -1,7 +1,7 @@
 language: generic
 
 env:
-- IMAGE_NAME=aadeshpa/kabanero-utils IMAGE_TAG_NAME=latest USER_NAME=aadeshpa publishImageStatus=false
+- IMAGE_NAME=aadeshpa/kabanero-utils
 
 go:
   - 1.12.x
