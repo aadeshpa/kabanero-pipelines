@@ -52,7 +52,7 @@ package() {
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
  #Fetching the utils image digest value for the image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG.
  echo "[INFO] Fetching the image digest value for image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
- image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]'); 
+ image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]'); 
  #This is to remove double quotes at the beginning and the end of the digest value found by above command
  image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
  
