@@ -75,7 +75,7 @@ elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSW
  . image_digest_mapping.config
  echo "sourcing done."
  echo "release_tag from file=$release_tag"
- echo "kabanero_utils_image_digest=$kabanero_utisl_image_digest"
+ echo "kabanero_utils_image_digest=$kabanero_utils_image_digest"
  cd ../
  pwd
  echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $kabanero_utils_image_digest and this value's source is from the configmap file"
