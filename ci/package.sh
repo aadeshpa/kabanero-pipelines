@@ -76,6 +76,10 @@ elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSW
  echo "sourcing done."
  echo "release_tag from file=$release_tag"
  echo "kabanero_utils_image_digest=$kabanero_utisl_image_digest"
+ cd ../
+ pwd
+ echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $kabanero_utils_image_digest and this value's source is from the configmap file"
+ find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$kabanero_utils_image_digest"'|g' {} +
 else
  echo "[Warning] The kabaneo-utils image was not build and pushed to dockerhub for this build, because one or more of the env variables TRAVIS_TAG=$TRAVIS_TAG or DOCKER_USERNAME=DOCKER_USERNAME or DOCKER_PASSWORD are empty "
 fi
