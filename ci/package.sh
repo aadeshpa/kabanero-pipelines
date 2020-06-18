@@ -69,16 +69,22 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
    echo "[ERROR] There was some error in updating the string image : $image_original_string with $image_digest_value in all the pipelines yaml files."
    exit 1
  fi
+elif [[ ( !-z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
+ echo "TRAVIS_TAG=$TRAVIS_TAG is present, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
+ echo "Trying to see if image digest value is present in file image_digest_mapping.config"
+ . image_digest_mapping.config
+ echo "utils_image_tag from file=$utils_image_tag"
+ echo "utils_image_url_with_digest=$utils_image_url_with_digest"
 elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
  echo "[INFO] The Travis tag is empty and docker_name and docker_password is empty, so probably package.sh is being run out of travis context"
  echo "sourcing config file for fetching image tag name and digest value"
  . image_digest_mapping.config
  echo "sourcing done."
- echo "release_tag from file=$release_tag"
- echo "kabanero_utils_image_digest=$kabanero_utils_image_digest"
+ echo "utils_image_tag from file=$utils_image_tag"
+ echo "utils_image_url_with_digest=$utils_image_url_with_digest"
  cd ../
  pwd
- echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $kabanero_utils_image_digest and this value's source is from the configmap file"
+ echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $utils_image_url_with_digest and this value's source is from the configmap file"
  find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$kabanero_utils_image_digest"'|g' {} +
 else
  echo "[Warning] The kabaneo-utils image was not build and pushed to dockerhub for this build, because one or more of the env variables TRAVIS_TAG=$TRAVIS_TAG or DOCKER_USERNAME=DOCKER_USERNAME or DOCKER_PASSWORD are empty "
