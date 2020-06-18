@@ -69,7 +69,7 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
    echo "[ERROR] There was some error in updating the string image : $image_original_string with $image_digest_value in all the pipelines yaml files."
    exit 1
  fi
-elif [[ ( !-z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
+elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
  echo "TRAVIS_TAG=$TRAVIS_TAG is present, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
  echo "Trying to see if image digest value is present in file image_digest_mapping.config"
  . image_digest_mapping.config
