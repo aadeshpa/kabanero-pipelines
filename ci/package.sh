@@ -87,7 +87,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
        IMAGE_NAME=$DEFAULT_IMAGE_NAME
      fi
  
-     if [[ ( -z utils_image_url_with_digest) ]]; then
+     if [[ -z utils_image_url_with_digest ]]; then
         echo "[INFO] Pulling the image if exists image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
         docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
  
