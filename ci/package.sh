@@ -70,7 +70,7 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
    exit 1
  fi
 elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
- cho "Coming in first elif"
+ echo "Coming in first elif"
  echo "TRAVIS_TAG=$TRAVIS_TAG is present, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
  echo "Trying to see if image digest value is present in file image_digest_mapping.config"
  . image_digest_mapping.config
