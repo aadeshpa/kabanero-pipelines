@@ -113,17 +113,32 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      exit 1
  fi
 elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
- echo "Coming in second elif"
- echo "[INFO] The Travis branch and Travis tag is empty and docker_name and docker_password are also empty, package.sh is being run out of the travis context"
- echo "sourcing config file for fetching image tag name and digest value"
- . image_digest_mapping.config
- echo "sourcing done."
- echo "utils_image_tag from file=$utils_image_tag"
- echo "utils_image_url_with_digest=$utils_image_url_with_digest"
- cd ../
- pwd
- echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $utils_image_url_with_digest and this value's source is from the configmap file"
- find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$kabanero_utils_image_digest"'|g' {} +
+     echo "Coming in second elif"
+     echo "[INFO] The Travis branch and Travis tag is empty and docker_name and docker_password are also empty, package.sh is being run out of the travis context"
+     echo "sourcing config file for fetching image tag name and digest value"
+     . image_digest_mapping.config
+     echo "sourcing done."
+     echo "utils_image_tag from file=$utils_image_tag"
+     echo "utils_image_url_with_digest=$utils_image_url_with_digest"
+     cd ../
+     pwd
+     if [[ ( -z "$IMAGE_NAME" ) ]]; then
+       IMAGE_NAME=$DEFAULT_IMAGE_NAME
+     fi
+     
+     if [[ -z "$utils_image_url_with_digest" ]]; then
+        echo "utils_image_url_with_digest is present and it will be used to update string image in all tasks"
+     else
+       if [[ ! -z "$utils_image_tag" ]]; then
+          echo "utils_image_url_with_digest is empty and hence string image in all tasks will be updated from $image_original_string with $utils_image_tag "
+       else
+          echo "[ERROR] The utils_image_url_with_digest variable from image_digest_mapping.config config file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
+          exit 1;
+       fi
+       
+     fi
+     echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $utils_image_url_with_digest and this value's source is from the configmap file"
+     find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$kabanero_utils_image_digest"'|g' {} +
 else
  echo "[Warning] The kabaneo-utils image was not build and pushed to dockerhub for this build, because one or more of the env variables TRAVIS_TAG=$TRAVIS_TAG or DOCKER_USERNAME=DOCKER_USERNAME or DOCKER_PASSWORD are empty "
 fi
