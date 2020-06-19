@@ -16,6 +16,8 @@ assets_dir=$base_dir/ci/assets
 mkdir -p $assets_dir
 
 image_original_string=kabanero/kabanero-utils:latest
+DOCKER_KABANERO_ACCOUNT=kabanero
+DEFAULT_IMAGE_NAME=kabanero-utils
 
 package() {
     local pipelines_dir=$1
@@ -72,12 +74,18 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
 elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
  echo "Coming in first elif"
  echo "TRAVIS_TAG=$TRAVIS_TAG is present, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
- echo "Trying to see if image digest value is present in file image_digest_mapping.config"
+ echo "Trying to see if utils_image_tag value is present in file image_digest_mapping.config"
  pwd
  ls -la
  . ./ci/image_digest_mapping.config
  echo "utils_image_tag from file=$utils_image_tag"
  echo "utils_image_url_with_digest=$utils_image_url_with_digest"
+ if [[ (-z $IMAGE_NAME) ]]; then
+    IMAGE_NAME=$DEFAULT_IMAGE_NAME
+ fi
+ echo "Searching for the digest value for image url =$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+ image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
+ echo "image_digest_value_withquote=$image_digest_value_withquote"
 elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
  echo "Coming in second elif"
  echo "[INFO] The Travis tag is empty and docker_name and docker_password is empty, so probably package.sh is being run out of travis context"
