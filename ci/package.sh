@@ -73,6 +73,8 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
  echo "Coming in first elif"
  echo "TRAVIS_TAG=$TRAVIS_TAG is present, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
  echo "Trying to see if image digest value is present in file image_digest_mapping.config"
+ pwd
+ ls -la
  . image_digest_mapping.config
  echo "utils_image_tag from file=$utils_image_tag"
  echo "utils_image_url_with_digest=$utils_image_url_with_digest"
