@@ -99,7 +99,19 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      else
         image_digest_value=$utils_image_url_with_digest
         echo "[INFO] final image url to be updated in all the pipeline tasks(found from config file with variable utils_image_url_with_digest): $image_digest_value"
-     fi     
+     fi
+     pwd
+     echo "[INFO] Trying to replace string image : $image_original_string as $image_digest_value in all the pipelines yaml files "
+     find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
+     if [ $? == 0 ]; then
+        echo "[INFO] Updated string image : $image_original_string with $image_digest_value in all the pipelines yaml files successfully"
+        cat /home/travis/build/aadeshpa/kabanero-pipelines/pipelines/incubator/build-push-task-dummy2.yaml
+        echo "*******"
+        cat /home/travis/build/aadeshpa/kabanero-pipelines/pipelines/incubator/build-push-task.yaml
+     else
+        echo "[ERROR] There was some error in updating the string image : $image_original_string with $image_digest_value in all the pipelines yaml files."
+     exit 1
+ fi
 elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
  echo "Coming in second elif"
  echo "[INFO] The Travis tag is empty and docker_name and docker_password is empty, so probably package.sh is being run out of travis context"
