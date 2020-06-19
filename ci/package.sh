@@ -134,8 +134,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
        else
           echo "[ERROR] The utils_image_url_with_digest variable from image_digest_mapping.config config file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
           exit 1;
-       fi
-       
+       fi       
      fi
      echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $utils_image_url_with_digest and this value's source is from the configmap file"
      find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$kabanero_utils_image_digest"'|g' {} +
