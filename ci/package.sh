@@ -72,26 +72,33 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
    exit 1
  fi
 elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
- echo "Coming in first elif"
- echo "TRAVIS_TAG=$TRAVIS_TAG is present, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
- echo "Trying to see if utils_image_tag value is present in file image_digest_mapping.config"
- pwd
- ls -la
- . ./ci/image_digest_mapping.config
+     echo "Coming in first elif"
+     echo "TRAVIS_TAG=$TRAVIS_TAG is present, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
+     echo "[INFO] Verifying if utils_image_url_with_digest is present in file image_digest_mapping.config."
  
- echo "[INFO] utils_image_tag from file=$utils_image_tag"
- echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
+     pwd
+     ls -la
+     . ./ci/image_digest_mapping.config
  
- if [[ (-z $IMAGE_NAME) ]]; then
-    IMAGE_NAME=$DEFAULT_IMAGE_NAME
- fi
+     echo "[INFO] utils_image_tag from file=$utils_image_tag"
+     echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
+  
+     if [[ (-z $IMAGE_NAME) ]]; then
+       IMAGE_NAME=$DEFAULT_IMAGE_NAME
+     fi
  
- echo "[INFO] Pulling the image if exists image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
- docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
+     if [[ ( -z utils_image_url_with_digest) ]]; then
+        echo "[INFO] Pulling the image if exists image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+        docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
  
- echo "Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
- image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
- echo "image_digest_value_withquote=$image_digest_value_withquote"
+        echo "Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+        image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
+        echo "image_digest_value_withquote=$image_digest_value_withquote"
+        echo "[INFO] final image url to be updated in all the pipeline tasks(fetched from dockerhub based on utils_image_tag=$utils_image_tag): $image_digest_value_withquote"
+     else
+        echo "[INFO] final image url to be updated in all the pipeline tasks(found from config file with variable utils_image_url_with_digest=$utils_image_url_with_digest): $utils_image_url_with_digest"
+     fi
+     
 elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
  echo "Coming in second elif"
  echo "[INFO] The Travis tag is empty and docker_name and docker_password is empty, so probably package.sh is being run out of travis context"
