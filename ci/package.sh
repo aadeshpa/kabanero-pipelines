@@ -112,9 +112,9 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         echo "[ERROR] There was some error in updating the string image : $image_original_string with $image_digest_value in all the pipelines yaml files."
      exit 1
  fi
-elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
+elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
  echo "Coming in second elif"
- echo "[INFO] The Travis tag is empty and docker_name and docker_password is empty, so probably package.sh is being run out of travis context"
+ echo "[INFO] The Travis branch and Travis tag is empty and docker_name and docker_password are also empty, package.sh is being run out of the travis context"
  echo "sourcing config file for fetching image tag name and digest value"
  . image_digest_mapping.config
  echo "sourcing done."
