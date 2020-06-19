@@ -78,13 +78,15 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
  pwd
  ls -la
  . ./ci/image_digest_mapping.config
- echo "utils_image_tag from file=$utils_image_tag"
- echo "utils_image_url_with_digest=$utils_image_url_with_digest"
+ 
+ echo "[INFO] utils_image_tag from file=$utils_image_tag"
+ echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
+ 
  if [[ (-z $IMAGE_NAME) ]]; then
     IMAGE_NAME=$DEFAULT_IMAGE_NAME
  fi
- echo "Searching for the digest value for image url =$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
- image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
+ echo "Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+ image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
  echo "image_digest_value_withquote=$image_digest_value_withquote"
 elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
  echo "Coming in second elif"
