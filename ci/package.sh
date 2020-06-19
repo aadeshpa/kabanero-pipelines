@@ -94,7 +94,8 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         echo "Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
         image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
         echo "image_digest_value_withquote=$image_digest_value_withquote"
-        echo "[INFO] final image url to be updated in all the pipeline tasks(fetched from dockerhub based on utils_image_tag=$utils_image_tag): $image_digest_value_withquote"
+        image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
+        echo "[INFO] final image url to be updated in all the pipeline tasks(fetched from dockerhub based on utils_image_tag=$utils_image_tag): $image_digest_value"
      else
         echo "[INFO] final image url to be updated in all the pipeline tasks(found from config file with variable utils_image_url_with_digest=$utils_image_url_with_digest): $utils_image_url_with_digest"
      fi
