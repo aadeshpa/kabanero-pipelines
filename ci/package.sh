@@ -85,6 +85,10 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
  if [[ (-z $IMAGE_NAME) ]]; then
     IMAGE_NAME=$DEFAULT_IMAGE_NAME
  fi
+ 
+ echo "[INFO] Pulling the image if exists image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+ docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
+ 
  echo "Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
  image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
  echo "image_digest_value_withquote=$image_digest_value_withquote"
