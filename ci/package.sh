@@ -97,9 +97,9 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
         echo "[INFO] final image url to be updated in all the pipeline tasks(fetched from dockerhub based on utils_image_tag=$utils_image_tag): $image_digest_value"
      else
-        echo "[INFO] final image url to be updated in all the pipeline tasks(found from config file with variable utils_image_url_with_digest): $utils_image_url_with_digest"
-     fi
-     
+        image_digest_value=$utils_image_url_with_digest
+        echo "[INFO] final image url to be updated in all the pipeline tasks(found from config file with variable utils_image_url_with_digest): $image_digest_value"
+     fi     
 elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
  echo "Coming in second elif"
  echo "[INFO] The Travis tag is empty and docker_name and docker_password is empty, so probably package.sh is being run out of travis context"
