@@ -75,7 +75,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
  echo "Trying to see if image digest value is present in file image_digest_mapping.config"
  pwd
  ls -la
- . image_digest_mapping.config
+ . ./ci/image_digest_mapping.config
  echo "utils_image_tag from file=$utils_image_tag"
  echo "utils_image_url_with_digest=$utils_image_url_with_digest"
 elif [[ ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
