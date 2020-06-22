@@ -151,7 +151,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
              exit 1
           fi
        else
-          echo "[ERROR] The utils_image_url_with_digest variable from 'image_digest_mapping.config config' file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
+          echo "[ERROR] The utils_image_url_with_digest variable from the 'image_digest_mapping.config' config file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
           exit 1
        fi
      fi
