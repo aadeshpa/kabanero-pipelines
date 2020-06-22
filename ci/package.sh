@@ -130,7 +130,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
         echo "utils_image_url_with_digest is present and it will be used to update string image in all tasks"
         echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $utils_image_url_with_digest and this value's source is from the configmap file"
         pwd
-        find ../ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$utils_image_url_with_digest"'|g' {} +
+        find ../ -type f -name '*.yaml' -exec sed -i '' 's|'"$image_original_string"'|'"$utils_image_url_with_digest"'|g' {} +
         if [ $? == 0 ]; then
              echo "[INFO] Updated string image : $image_original_string with $utils_image_url_with_digest in all the pipelines yaml files successfully"
           else
@@ -143,7 +143,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
           echo "utils_image_url_with_digest is empty and hence string image in all tasks will be updated from $image_tag_url_value with $image_digest_value "
           echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $image_tag_url_value and this value's source is from the configmap file"
           pwd
-          find ../ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_tag_url_value"'|g' {} +
+          find ../ -type f -name '*.yaml' -exec sed -i '' 's|'"$image_original_string"'|'"$image_tag_url_value"'|g' {} +
           if [ $? == 0 ]; then
              echo "[INFO] Updated string image : $image_original_string with $image_tag_url_value in all the pipelines yaml files successfully"
           else
