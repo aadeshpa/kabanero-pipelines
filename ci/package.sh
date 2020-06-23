@@ -85,8 +85,8 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
        exit 1
        
      fi
-     echo "[INFO] Checking the config file 'image_digest_mapping.config' for below variable values."
-     echo "These will be used for fetching the correct utils container image based on either imagetag value or image digest value."
+     echo "[INFO] Checking the config file image_digest_mapping.config for below variable values"
+     echo "[INFO] These will be used for fetching the correct utils container image based on either imagetag value or image digest value"
      echo "[INFO] utils_image_tag=$utils_image_tag"
      echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
   
