@@ -87,8 +87,9 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      fi
  
      if [[ -z "$utils_image_url_with_digest" ]]; then
-        echo "[INFO] Pulling the image if exists based on utils image digest value as per the config file 'image_digest_mapping.config' 
-        image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+        echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the tagname value found."
+        echo "[INFO] Fetching the digest value from dockerhub based on the utils container image url =docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+        #image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
         docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
         if [ $? != 0 ]; then
            echo "[ERROR] The docker image not found or some error in pulling the image ocker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
@@ -98,9 +99,9 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
            image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
            
            image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-           echo "[INFO] image Successfully fetched image digest value for url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-           echo "[INFO] image_digest_value=$image_digest_value"
-           echo "[INFO] Utils Image Url to be updated in all the pipeline tasks(fetched from dockerhub based on utils_image_tag=$utils_image_tag): $image_digest_value"
+           echo "[INFO] Successfully fetched image digest value for url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+           echo "[INFO] Utils container image url with digest value=$image_digest_value"
+           #echo "[INFO] Utils Image Url to be updated in all the pipeline tasks(fetched from dockerhub based on utils_image_tag=$utils_image_tag): $image_digest_value"
         fi    
      else   
         image_digest_value=$utils_image_url_with_digest
