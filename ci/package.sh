@@ -51,6 +51,11 @@ package() {
     echo ${tarballSHA}>> $assets_dir/${prefix}-pipelines-tar-gz-sha256
 }
 
+setup_utils_image_url(){
+ echo "inside method setup for image url"
+ 
+}
+
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
  #Fetching the utils image digest value for the image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG.
  echo "[INFO] Fetching the image digest value for image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
@@ -85,6 +90,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      echo "[INFO] utils_image_tag=$utils_image_tag"
      echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
   
+     setup_utils_image_url
      if [[ ( -z "$IMAGE_NAME" ) ]]; then
        IMAGE_NAME=$DEFAULT_IMAGE_NAME
      fi
