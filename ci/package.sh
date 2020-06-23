@@ -75,10 +75,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      
      echo "[INFO] This is a build for TRAVIS_TAG=$TRAVIS_TAG, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
      echo "[INFO] Looking in the config file /ci/image_digest_mapping.config"
-     echo "testing echo"
-     pwd
-     ls -la
-     echo "sourcing ci/image_digest_mapping.config"
+     echo "[INFO] sourcing the file ./ci/image_digest_mapping.config"
      chmod 755 ./ci/image_digest_mapping.config
      . ./ci/image_digest_mapping.config
      if [ $? != 0 ]; then
@@ -87,6 +84,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      else
        echo "sourced the file successfully"
      fi
+     
      echo "[INFO] Checking the config file image_digest_mapping.config for below variable values"
      echo "[INFO] These will be used for fetching the correct utils container image based on either imagetag value or image digest value"
      echo "[INFO] utils_image_tag=$utils_image_tag"
