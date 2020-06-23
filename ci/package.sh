@@ -79,7 +79,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      pwd
      ls -la
      echo "sourcing ci/image_digest_mapping.config"
-     . ci/image_digest_mapping.config
+     source ./ci/image_digest_mapping.config
      if [ $? != 0 ]; then
        echo "some issue in sourcing file"
        exit 1
