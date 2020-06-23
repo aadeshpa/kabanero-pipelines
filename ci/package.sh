@@ -69,6 +69,7 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
    cat /home/travis/build/aadeshpa/kabanero-pipelines/pipelines/incubator/build-push-task.yaml
  else
    echo "[ERROR] There was some error in updating the string image : $image_original_string with $image_digest_value in all the pipelines yaml files."
+   sleep 1
    exit 1
  fi
 elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
@@ -96,6 +97,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
            docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
            if [ $? != 0 ]; then
               echo "[ERROR] The docker image not found or some error in pulling the image ocker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+              sleep 1
               exit 1
            else
               echo "[INFO] Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
@@ -122,6 +124,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with ' image : $image_digest_value' in all the pipeline tasks yaml files successfully"
      else
         echo "[ERROR] There was some error in updating the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline tasks yaml files."
+        sleep 1
         exit 1
      fi
 elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
@@ -152,6 +155,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
           image_replacement_string=$image_tag_url_value
        else
           echo "[ERROR] The utils_image_url_with_digest variable from 'image_digest_mapping.config config' file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
+          sleep 1
           exit 1
        fi
      fi
@@ -165,6 +169,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
         echo "[INFO] Updated string image : $image_original_string with $image_replacement_string in all the pipelines yaml files successfully"
      else
         echo "[ERROR] There was some error in updating the string image : $image_original_string with $image_replacement_string in all the pipeline tasks yaml files."
+        sleep 1
         exit 1
      fi
 else
