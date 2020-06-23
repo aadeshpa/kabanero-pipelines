@@ -78,8 +78,13 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      echo "testing echo"
      pwd
      ls -la
-     . ./ci/image_digest_mapping.config
- 
+     echo "sourcing ci/image_digest_mapping.config"
+     . ci/image_digest_mapping.config
+     if [ $? != 0 ]; then
+       echo "some issue in sourcing file"
+       exit 1
+       
+     fi
      echo "[INFO] Checking the config file 'image_digest_mapping.config' for below variable values."
      echo "These will be used for fetching the correct utils container image based on either imagetag value or image digest value."
      echo "[INFO] utils_image_tag=$utils_image_tag"
