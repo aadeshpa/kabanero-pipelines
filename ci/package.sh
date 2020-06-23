@@ -74,7 +74,7 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
 elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
      
      echo "[INFO] This is a build for TRAVIS_TAG=$TRAVIS_TAG, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
-     echo "[INFO] Looking in the config file '/ci/image_digest_mapping.config'"
+     echo "[INFO] Looking in the config file /ci/image_digest_mapping.config"
      . ./ci/image_digest_mapping.config
  
      echo "[INFO] Checking the config file 'image_digest_mapping.config' for below variable values."
