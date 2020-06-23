@@ -78,8 +78,8 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
  
      . ./ci/image_digest_mapping.config
  
-     echo "[INFO] Checking config file 'image_digest_mapping.config' for below variables for fetching correct utils container image
-     based on imagename or digest value."
+     echo "[INFO] Checking the config file 'image_digest_mapping.config' for below variable values."
+     echo "These will be used for fetching the correct utils container image based on either imagetag value or image digest value."
      echo "[INFO] utils_image_tag from file=$utils_image_tag"
      echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
   
@@ -105,11 +105,11 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         fi    
      else   
         image_digest_value=$utils_image_url_with_digest
-        echo "[INFO] As per the config file 'image_digest_mapping.config' utils image url with digest value found."
-        echo "[INFO] Utils container image url with digest value =$image_digest_value"
+        echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the digest value found."
+        echo "[INFO] Utils container image url with digest value = $image_digest_value"
      fi
      
-     echo "[INFO] Replacing the utils container image string from original image : $image_original_string with image : $image_digest_value in all the pipeline tasks yaml files."
+     echo "[INFO] Replacing the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline tasks yaml files."
      find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
      if [ $? == 0 ]; then
         echo "[INFO] Updated utils container image string image : $image_original_string with $image_digest_value in all the pipeline tasks yaml files successfully"
