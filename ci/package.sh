@@ -112,9 +112,9 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      echo "[INFO] Replacing the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline tasks yaml files."
      find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
      if [ $? == 0 ]; then
-        echo "[INFO] Updated utils container image string image : $image_original_string with $image_digest_value in all the pipeline tasks yaml files successfully"
+        echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with ' image : $image_digest_value' in all the pipeline tasks yaml files successfully"
      else
-        echo "[ERROR] There was some error in updating the utils container image string image : $image_original_string with $image_digest_value in all the pipeline tasks yaml files."
+        echo "[ERROR] There was some error in updating the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline tasks yaml files."
      exit 1
  fi
 elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
