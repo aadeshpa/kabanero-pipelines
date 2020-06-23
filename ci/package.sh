@@ -87,23 +87,27 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      fi
  
      if [[ -z "$utils_image_url_with_digest" ]]; then
-        echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the tagname value found."
-        echo "[INFO] Fetching the digest value from dockerhub based on the utils container image url =docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-        #image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-        docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
-        if [ $? != 0 ]; then
-           echo "[ERROR] The docker image not found or some error in pulling the image ocker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-           exit 1
-        else
-           echo "[INFO] Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-           image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
+        if [[ ! -z "$utils_image_tag" ]]; then
+           echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the tagname value found."
+           echo "[INFO] Fetching the digest value from dockerhub based on the utils container image url =docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+           #image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+           docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
+           if [ $? != 0 ]; then
+              echo "[ERROR] The docker image not found or some error in pulling the image ocker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+              exit 1
+           else
+              echo "[INFO] Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+              image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
            
-           image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-           echo "[INFO] Successfully fetched image digest value for url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-           echo "[INFO] Utils container image url with digest value=$image_digest_value"
-           #echo "[INFO] Utils Image Url to be updated in all the pipeline tasks(fetched from dockerhub based on utils_image_tag=$utils_image_tag): $image_digest_value"
-        fi    
-     else   
+              image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
+              echo "[INFO] Successfully fetched image digest value for url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
+              echo "[INFO] Utils container image url with digest value=$image_digest_value"     
+           fi
+        else
+           echo "[ERROR] The utils_image_url_with_digest variable from 'image_digest_mapping.config config' file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
+           exit 1
+        fi         
+     else 
         image_digest_value=$utils_image_url_with_digest
         echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the digest value found."
         echo "[INFO] Utils container image url with digest value = $image_digest_value"
@@ -115,8 +119,8 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with ' image : $image_digest_value' in all the pipeline tasks yaml files successfully"
      else
         echo "[ERROR] There was some error in updating the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline tasks yaml files."
-     exit 1
- fi
+        exit 1
+     fi
 elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
      echo "Coming in second elif"
      echo "[INFO] The Travis branch and Travis tag is empty and docker_name and docker_password are also empty, package.sh is being run out of the travis context"
