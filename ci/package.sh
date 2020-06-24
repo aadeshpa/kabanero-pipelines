@@ -59,6 +59,8 @@ setup_utils_image_url(){
 if [[ ( -z "$IMAGE_NAME" ) ]]; then
    IMAGE_NAME=$DEFAULT_IMAGE_NAME
 fi
+# This is for handling the build and push of utils container image, if this script is run via travis automation and 
+# if DOCKER_USERNAME and DOCKER_PASSWORD are present in travis environment variables
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
  #Fetching the utils image digest value for the image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG.
  echo "[INFO] Fetching the image digest value for image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
@@ -66,17 +68,13 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
  #This is to remove double quotes at the beginning and the end of the digest value found by above command
  image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
  
- echo "[INFO] Trying to replace string image : $image_original_string as $image_digest_value in all the pipelines yaml files";
- pwd;
- ls -la;
+ echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
+ 
  find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
  if [ $? == 0 ]; then
-   echo "[INFO] Updated string image : $image_original_string with $image_digest_value in all the pipelines yaml files successfully"
-   cat /home/travis/build/aadeshpa/kabanero-pipelines/pipelines/incubator/build-push-task-dummy2.yaml
-   echo "*******"
-   cat /home/travis/build/aadeshpa/kabanero-pipelines/pipelines/incubator/build-push-task.yaml
+   echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline taks yaml files successfully"
  else
-   echo "[ERROR] There was some error in updating the string image : $image_original_string with $image_digest_value in all the pipelines yaml files."
+   echo "[ERROR] There was some error in updating the string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files."
    sleep 1
    exit 1
  fi
@@ -99,7 +97,6 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         if [[ ! -z "$utils_image_tag" ]]; then
            echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the tagname value found."
            echo "[INFO] Fetching the digest value from dockerhub based on the utils container image url =docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-           #image url=docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
            docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
            if [ $? != 0 ]; then
               echo "[ERROR] The docker image not found or some error in pulling the image ocker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
@@ -127,9 +124,9 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      echo "[INFO] Replacing the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline tasks yaml files."
      find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
      if [ $? == 0 ]; then
-        echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with ' image : $image_digest_value' in all the pipeline tasks yaml files successfully"
+        echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with ' image : $image_digest_value' in all the pipeline task yaml files successfully"
      else
-        echo "[ERROR] There was some error in updating the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline tasks yaml files."
+        echo "[ERROR] There was some error in updating the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files."
         sleep 1
         exit 1
      fi
@@ -161,7 +158,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
        fi
      fi
 
-     echo "[INFO] Replacing the utils container image string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline tasks yaml files."
+     echo "[INFO] Replacing the utils container image string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline task yaml files."
      if [[ "$OSTYPE" != "darwin"* ]]; then
         find ../ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_replacement_string"'|g' {} +
      else
@@ -170,7 +167,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
      if [ $? == 0 ]; then
         echo "[INFO] Updated string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline task files successfully"
      else
-        echo "[ERROR] There was some error in updating the string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline tasks yaml files."
+        echo "[ERROR] There was some error in updating the string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline task yaml files."
         sleep 1
         exit 1
      fi
