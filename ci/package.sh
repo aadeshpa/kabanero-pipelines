@@ -56,6 +56,9 @@ setup_utils_image_url(){
  
 }
 
+if [[ ( -z "$IMAGE_NAME" ) ]]; then
+   IMAGE_NAME=$DEFAULT_IMAGE_NAME
+fi
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
  #Fetching the utils image digest value for the image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG.
  echo "[INFO] Fetching the image digest value for image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
@@ -91,10 +94,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
      echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
   
      setup_utils_image_url
-     if [[ ( -z "$IMAGE_NAME" ) ]]; then
-       IMAGE_NAME=$DEFAULT_IMAGE_NAME
-     fi
- 
+
      if [[ -z "$utils_image_url_with_digest" ]]; then
         if [[ ! -z "$utils_image_tag" ]]; then
            echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the tagname value found."
@@ -143,9 +143,6 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
      echo "utils_image_url_with_digest=$utils_image_url_with_digest"
      cd ../
      pwd
-     if [[ ( -z "$IMAGE_NAME" ) ]]; then
-       IMAGE_NAME=$DEFAULT_IMAGE_NAME
-     fi
      
      if [[ ! -z "$utils_image_url_with_digest" ]]; then
         echo "utils_image_url_with_digest is present and it will be used to update string image in all tasks"
