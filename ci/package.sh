@@ -134,44 +134,43 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         exit 1
      fi
 elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
-     echo "Coming in second elif"
-     echo "[INFO] The Travis branch and Travis tag is empty and docker_name and docker_password are also empty, package.sh is being run out of the travis context"
-     echo "sourcing config file for fetching image tag name and digest value"
+     echo "[INFO] The Travis variables TRAVIS_BRANCH and TRAVIS_TAG are empty and docker variables DOCKER_USERNAME and DOCKER_PASSWORD are also empty, package.sh is being run outside of the travis context, in the local mode"
+     echo "[INFO] Looking in the config file '/ci/image_digest_mapping.config'"
+     echo "[INFO] sourcing the file ci/image_digest_mapping.config"
      . image_digest_mapping.config
-     echo "sourcing done."
-     echo "utils_image_tag from file=$utils_image_tag"
-     echo "utils_image_url_with_digest=$utils_image_url_with_digest"
-     cd ../
-     pwd
+
+     echo "[INFO] Checking the config file 'ci/image_digest_mapping.config' for below variable values"
+     echo "[INFO] These will be used for setting up the correct utils container image url and replace old url with this one before packaging the pipelines"
+     echo "[INFO] utils_image_tag from file=$utils_image_tag"
+     echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
      
      if [[ ! -z "$utils_image_url_with_digest" ]]; then
-        echo "utils_image_url_with_digest is present and it will be used to update string image in all tasks"
-        echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $utils_image_url_with_digest and this value's source is from the configmap file"
-        pwd
         image_replacement_string=$utils_image_url_with_digest
+        echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the digest value found."
+        echo "[INFO] Utils container image url with digest value = $image_replacement_string"
      else
        if [[ ! -z "$utils_image_tag" ]]; then
           image_tag_url_value=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
-          echo "utils_image_url_with_digest is empty and hence string image in all tasks will be updated from $image_tag_url_value with $image_digest_value "
-          echo "[INFO] Trying to replace string image : $image_original_string in all the pipelines yaml files as $image_tag_url_value and this value's source is from the configmap file"
-          pwd
+          echo "[INFO] As per the config file 'ci/image_digest_mapping.config' 'utils_image_url_with_digest' is empty"
+          echo "[INFO] However utils container image url with the tagname value found and hence the string image in all the pipeline tasks will be updated with $image_tag_url_value"
           image_replacement_string=$image_tag_url_value
        else
-          echo "[ERROR] The utils_image_url_with_digest variable from 'image_digest_mapping.config config' file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
+          echo "[ERROR] The 'utils_image_url_with_digest' variable from 'image_digest_mapping.config config' file is empty and the variable 'utils_image_tag' is also empty, please provide atleast one and try again."
           sleep 1
           exit 1
        fi
      fi
 
+     echo "[INFO] Replacing the utils container image string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline tasks yaml files."
      if [[ "$OSTYPE" != "darwin"* ]]; then
         find ../ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_replacement_string"'|g' {} +
      else
         find ../ -type f -name '*.yaml' -exec sed -i '' 's|'"$image_original_string"'|'"$image_replacement_string"'|g' {} +
      fi
      if [ $? == 0 ]; then
-        echo "[INFO] Updated string image : $image_original_string with $image_replacement_string in all the pipelines yaml files successfully"
+        echo "[INFO] Updated string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline task files successfully"
      else
-        echo "[ERROR] There was some error in updating the string image : $image_original_string with $image_replacement_string in all the pipeline tasks yaml files."
+        echo "[ERROR] There was some error in updating the string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline tasks yaml files."
         sleep 1
         exit 1
      fi
