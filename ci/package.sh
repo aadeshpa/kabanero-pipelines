@@ -78,6 +78,8 @@ if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASS
    sleep 1
    exit 1
  fi
+# This conditional logic is while creating a release cut, but when utils container image build and push is not required.
+# Hence DOCKER_USERNAME and DOCKER_PASSWORD are empty.
 elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
      
      echo "[INFO] This is a build for TRAVIS_TAG=$TRAVIS_TAG, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
@@ -130,6 +132,8 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         sleep 1
         exit 1
      fi
+# This is when a user is trying to package the pipelines by not cutting a new release , but by just running the package.sh script locally.
+# Hence all the Travis variables will be empty for this conditional logic.
 elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
      echo "[INFO] The Travis variables TRAVIS_BRANCH and TRAVIS_TAG are empty and docker variables DOCKER_USERNAME and DOCKER_PASSWORD are also empty, package.sh is being run outside of the travis context, in the local mode"
      echo "[INFO] Looking in the config file '/ci/image_digest_mapping.config'"
@@ -170,9 +174,7 @@ elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAM
         echo "[ERROR] There was some error in updating the string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline task yaml files."
         sleep 1
         exit 1
-     fi
-else
-     echo "[Warning] The kabaneo-utils image was not build and pushed to dockerhub for this build, because one or more of the env variables TRAVIS_TAG=$TRAVIS_TAG or DOCKER_USERNAME=DOCKER_USERNAME or DOCKER_PASSWORD are empty "
+     fi 
 fi
      
 package $pipelines_dir "default-kabanero"
