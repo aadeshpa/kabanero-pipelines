@@ -59,8 +59,8 @@ setup_utils_image_url(){
 if [[ ( -z "$IMAGE_NAME" ) ]]; then
    IMAGE_NAME=$DEFAULT_IMAGE_NAME
 fi
-# This is for handling the build and push of utils container image, if this script is run via travis automation and 
-# if DOCKER_USERNAME and DOCKER_PASSWORD are present in travis environment variables
+# This is for handling the travis automation case while we cut a new release where utils container image is assumed to be published, so the image url with digest value is fetched
+# based on tagname as TRAVIS_TAG value. Using this fetched digest value the task files are updated for that image reference before packaging the pipelines.
 if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
  #Fetching the utils image digest value for the image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG.
  echo "[INFO] Fetching the image digest value for image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
@@ -132,8 +132,9 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
         sleep 1
         exit 1
      fi
-# This is when a user is trying to package the pipelines by not cutting a new release , but by just running the package.sh script locally.
-# Hence all the Travis variables will be empty for this conditional logic.
+# This is the case when a user is trying to package the pipelines by not cutting a new release , but by just running the package.sh script locally.
+# Hence all the Travis variables will be empty for this conditional logic. And hence the utils container image tagname or whole url with digest value
+# is expected in this config file '/ci/image_digest_mapping.config'
 elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
      echo "[INFO] The Travis variables TRAVIS_BRANCH and TRAVIS_TAG are empty and docker variables DOCKER_USERNAME and DOCKER_PASSWORD are also empty, package.sh is being run outside of the travis context, in the local mode"
      echo "[INFO] Looking in the config file '/ci/image_digest_mapping.config'"
