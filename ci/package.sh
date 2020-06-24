@@ -113,7 +113,7 @@ elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWOR
               echo "[INFO] Utils container image url with digest value=$image_digest_value"     
            fi
         else
-           echo "[ERROR] The utils_image_url_with_digest variable from 'image_digest_mapping.config config' file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
+           echo "[ERROR] The utils_image_url_with_digest variable from the 'image_digest_mapping.config' file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
            sleep 1
            exit 1
         fi         
