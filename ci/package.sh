@@ -62,6 +62,19 @@ setup_utils_image_url(){
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using $image_build_option"
+   if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
+   
+   elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]
+   
+   elif [[ ( -z "$image_build_option" ) ]]
+        echo "[ERROR] Input to the script is empty, valid input to this script is either 'docker' or 'buildah'"
+        sleep 1;
+        exit 1;
+   else
+        echo "[ERROR] Input to the script is not correct, valid input values to this script are either 'docker' or 'buildah'. Please fix it and try again. "
+        sleep 1;
+        exit 1;
+   fi
 else
    echo "We are not building the utils image"
 fi
