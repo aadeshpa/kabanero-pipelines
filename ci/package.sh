@@ -7,6 +7,8 @@ set -e
 # expose an extension point for running before main 'package' processing
 exec_hooks $script_dir/ext/pre_package.d
 
+image_build_option=$1
+
 pipelines_dir=$base_dir/pipelines/incubator
 eventing_pipelines_dir=$base_dir/pipelines/incubator/events
 gitops_pipelines_dir=$base_dir/pipelines/experimental/gitops
@@ -56,127 +58,15 @@ setup_utils_image_url(){
  
 }
 
-if [[ ( -z "$IMAGE_NAME" ) ]]; then
-   IMAGE_NAME=$DEFAULT_IMAGE_NAME
+#Start
+if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
+   echo "We will publish utils image"
+   echo "[INFO] Building image using $image_build_option"
+else
+   echo "We are not building the utils image"
 fi
-# This is for handling the travis automation case while we cut a new release where utils container image is assumed to be published, so the image url with digest value is fetched
-# based on tagname as TRAVIS_TAG value. Using this fetched digest value the task files are updated for that image reference before packaging the pipelines.
-if [ ! -z "$TRAVIS_TAG" ] && [ ! -z "$DOCKER_USERNAME" ] && [ ! -z "$DOCKER_PASSWORD" ]; then
- #Fetching the utils image digest value for the image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG.
- echo "[INFO] Fetching the image digest value for image docker.io/$DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG"
- image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG | jq 'values[0]'); 
- #This is to remove double quotes at the beginning and the end of the digest value found by above command
- image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
- 
- echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
- 
- find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
- if [ $? == 0 ]; then
-   echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline taks yaml files successfully"
- else
-   echo "[ERROR] There was some error in updating the string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files."
-   sleep 1
-   exit 1
- fi
-# This conditional logic is while creating a release cut, but when utils container image build and push is not required.
-# Hence DOCKER_USERNAME and DOCKER_PASSWORD are empty.
-elif [[ ( ! -z "$TRAVIS_TAG") && (-z "$DOCKER_USERNAME") && (-z "$DOCKER_PASSWORD") ]]; then
-     
-     echo "[INFO] This is a build for TRAVIS_TAG=$TRAVIS_TAG, however DOCKER_USERNAME and DOCKER_PASSWORD are empty."
-     echo "[INFO] Looking in the config file /ci/image_digest_mapping.config"
-     echo "[INFO] sourcing the file ci/image_digest_mapping.config"
-     chmod 755 ./ci/image_digest_mapping.config
-     . ./ci/image_digest_mapping.config
-     
-     echo "[INFO] Checking the config file image_digest_mapping.config for below variable values"
-     echo "[INFO] These will be used for fetching the correct utils container image based on either imagetag value or image digest value"
-     echo "[INFO] utils_image_tag=$utils_image_tag"
-     echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
-  
-     setup_utils_image_url
 
-     if [[ -z "$utils_image_url_with_digest" ]]; then
-        if [[ ! -z "$utils_image_tag" ]]; then
-           echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the tagname value found."
-           echo "[INFO] Fetching the digest value from dockerhub based on the utils container image url =docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-           docker pull $DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
-           if [ $? != 0 ]; then
-              echo "[ERROR] The docker image not found or some error in pulling the image ocker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-              sleep 1
-              exit 1
-           else
-              echo "[INFO] Searching for the digest value for image url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-              image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' docker.io/$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag | jq 'values[0]');
-           
-              image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-              echo "[INFO] Successfully fetched image digest value for url=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag"
-              echo "[INFO] Utils container image url with digest value=$image_digest_value"     
-           fi
-        else
-           echo "[ERROR] The utils_image_url_with_digest variable from the 'image_digest_mapping.config' file is empty and the variable utils_image_tag is also empty, please provide atleast one and try again."
-           sleep 1
-           exit 1
-        fi         
-     else 
-        image_digest_value=$utils_image_url_with_digest
-        echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the digest value found."
-        echo "[INFO] Utils container image url with digest value = $image_digest_value"
-     fi
-     
-     echo "[INFO] Replacing the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline tasks yaml files."
-     find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
-     if [ $? == 0 ]; then
-        echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with ' image : $image_digest_value' in all the pipeline task yaml files successfully"
-     else
-        echo "[ERROR] There was some error in updating the utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files."
-        sleep 1
-        exit 1
-     fi
-# This is the case when a user is trying to package the pipelines by not cutting a new release , but by just running the package.sh script locally.
-# Hence all the Travis variables will be empty for this conditional logic. And hence the utils container image tagname or whole url with digest value
-# is expected in this config file '/ci/image_digest_mapping.config'
-elif [[ ( -z "$TRAVIS_BRANCH" ) && ( -z "$TRAVIS_TAG" ) && ( -z "$DOCKER_USERNAME" ) && ( -z "$DOCKER_PASSWORD" )  ]]; then
-     echo "[INFO] The Travis variables TRAVIS_BRANCH and TRAVIS_TAG are empty and docker variables DOCKER_USERNAME and DOCKER_PASSWORD are also empty, package.sh is being run outside of the travis context, in the local mode"
-     echo "[INFO] Looking in the config file '/ci/image_digest_mapping.config'"
-     echo "[INFO] sourcing the file ci/image_digest_mapping.config"
-     . image_digest_mapping.config
-
-     echo "[INFO] Checking the config file 'ci/image_digest_mapping.config' for below variable values"
-     echo "[INFO] These will be used for setting up the correct utils container image url and replace old url with this one before packaging the pipelines"
-     echo "[INFO] utils_image_tag from file=$utils_image_tag"
-     echo "[INFO] utils_image_url_with_digest=$utils_image_url_with_digest"
-     
-     if [[ ! -z "$utils_image_url_with_digest" ]]; then
-        image_replacement_string=$utils_image_url_with_digest
-        echo "[INFO] As per the config file 'image_digest_mapping.config' utils container image url with the digest value found."
-        echo "[INFO] Utils container image url with digest value = $image_replacement_string"
-     else
-       if [[ ! -z "$utils_image_tag" ]]; then
-          image_tag_url_value=$DOCKER_KABANERO_ACCOUNT/$IMAGE_NAME:$utils_image_tag
-          echo "[INFO] As per the config file 'ci/image_digest_mapping.config' 'utils_image_url_with_digest' is empty"
-          echo "[INFO] However utils container image url with the tagname value found and hence the string image in all the pipeline tasks will be updated with $image_tag_url_value"
-          image_replacement_string=$image_tag_url_value
-       else
-          echo "[ERROR] The 'utils_image_url_with_digest' variable from 'image_digest_mapping.config config' file is empty and the variable 'utils_image_tag' is also empty, please provide atleast one and try again."
-          sleep 1
-          exit 1
-       fi
-     fi
-
-     echo "[INFO] Replacing the utils container image string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline task yaml files."
-     if [[ "$OSTYPE" != "darwin"* ]]; then
-        find ../ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_replacement_string"'|g' {} +
-     else
-        find ../ -type f -name '*.yaml' -exec sed -i '' 's|'"$image_original_string"'|'"$image_replacement_string"'|g' {} +
-     fi
-     if [ $? == 0 ]; then
-        echo "[INFO] Updated string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline task files successfully"
-     else
-        echo "[ERROR] There was some error in updating the string 'image : $image_original_string' with 'image : $image_replacement_string' in all the pipeline task yaml files."
-        sleep 1
-        exit 1
-     fi 
-fi
+#End
      
 package $pipelines_dir "default-kabanero"
 
