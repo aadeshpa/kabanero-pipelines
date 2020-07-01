@@ -11,7 +11,8 @@ before_install:
   - sudo apt-get -y install jq
   
 script:
-  - ./ci/publish_utils_image.sh;
+  - #./ci/publish_utils_image.sh;
+  - echo "script section"
 
 # note before_deploy will run before each deploy provider
 before_deploy:
