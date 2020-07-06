@@ -62,6 +62,12 @@ setup_utils_image_url(){
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using $image_build_option"
+   if [ ! -z "$TRAVIS_TAG" ] ; then
+      echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
+   else
+       echo "[INFO] This travis build is not for a tagged TRAVIS_TAG and its empty, hence skipping the build and publish of the image DOCKER_USERNAME/IMAGE_NAME"
+   fi
+   
    if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
       echo "Building the image using image_build_option = $image_build_option"
    elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
