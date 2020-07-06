@@ -63,9 +63,9 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using $image_build_option"
    if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
-   
+      echo "Building the image using image_build_option = $image_build_option"
    elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]
-   
+        echo "Building the image using image_build_option=$image_build_option"
    elif [[ ( -z "$image_build_option" ) ]]
         echo "[ERROR] Input to the script is empty, valid input to this script is either 'docker' or 'buildah'"
         sleep 1;
