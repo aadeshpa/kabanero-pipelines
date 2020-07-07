@@ -31,6 +31,8 @@ fi
 # export IMAGE_REGISTRY
 # export IMAGE_REGISTRY_USERNAME
 # export IMAGE_REGISTRY_PASSWORD
+# export UTILS_IMAGE_NAME
+# export UTILS_IMAGE_TAG
 
 # Organization for images
 # export IMAGE_REGISTRY_ORG=kabanero
