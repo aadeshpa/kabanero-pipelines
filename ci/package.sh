@@ -63,12 +63,21 @@ setup_utils_image_url(){
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using $image_build_option"
+   
+   #setting the Utils image name as Default image name in case it is empty or not provided from env.sh
+   if [ -z "$UTILS_IMAGE_NAME" ]; then
+      UTILS_IMAGE_NAME=$DEFAULT_IMAGE_NAME
+   fi
+   #setting up the utils image tagname as TRAVIS_TAG in case it is not empty, which is during Travis automation step.
+   # In other cases UTILS_IMAGE_TAG will be exported from env.sh file.
    if [ ! -z "$TRAVIS_TAG" ] ; then
       UTILS_IMAGE_TAG=$TRAVIS_TAG
    fi
+
    
    echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
    if [[ (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
+   
       echo "The image registry creds are present, building the image "
    else
       echo "The image registry creds are not present, please provide it correctly and try again."
