@@ -80,6 +80,19 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
       if [[ ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
          echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
          echo "Building the image"
+         if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
+            echo "Building the image using image_build_option = $image_build_option"
+         elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
+              echo "Building the image using image_build_option=$image_build_option"
+         elif [[ ( -z "$image_build_option" ) ]]; then
+              echo "[ERROR] Input to the script is empty, valid input to this script is either 'docker' or 'buildah'"
+              sleep 1;
+              exit 1;
+         else
+              echo "[ERROR] Input to the script is not correct, valid input values to this script are either 'docker' or 'buildah'. Please fix it and try again. "
+              sleep 1;
+              exit 1;
+         fi
       else
          echo "[ERROR] Either UTILS_IMAGE_NAME or UTILS_IMAGE_TAG or both are empty, please provide correct image name and tag name for building the utils image and try again."
          sleep 1
@@ -92,19 +105,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
       exit 1
    fi
    
-   if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
-      echo "Building the image using image_build_option = $image_build_option"
-   elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
-        echo "Building the image using image_build_option=$image_build_option"
-   elif [[ ( -z "$image_build_option" ) ]]; then
-        echo "[ERROR] Input to the script is empty, valid input to this script is either 'docker' or 'buildah'"
-        sleep 1;
-        exit 1;
-   else
-        echo "[ERROR] Input to the script is not correct, valid input values to this script are either 'docker' or 'buildah'. Please fix it and try again. "
-        sleep 1;
-        exit 1;
-   fi
+
 else
    echo "We are not building the utils image"
 fi
