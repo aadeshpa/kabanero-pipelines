@@ -77,7 +77,14 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    
    echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
    if [[ (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
-   
+      if [[ ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
+         echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
+         echo "Building the image"
+      else
+         echo "[ERROR] Either UTILS_IMAGE_NAME or UTILS_IMAGE_TAG or both are empty, please provide correct image name and tag name from env.sh for building utils image and try again."
+         sleep 1
+         exit 1
+      fi
       echo "The image registry creds are present, building the image "
    else
       echo "The image registry creds are not present, please provide it correctly and try again."
