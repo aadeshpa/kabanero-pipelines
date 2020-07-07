@@ -59,20 +59,21 @@ setup_utils_image_url(){
 }
 
 #Start
+
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using $image_build_option"
    if [ ! -z "$TRAVIS_TAG" ] ; then
-      echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
-      if [[ (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
-         echo "The image registry creds are present, building the image "
-      else
-         echo "The image registry creds are not present, please provide it correctly and try again."
-         sleep 1
-         exit 1
-      fi
+      UTILS_IMAGE_TAG=$TRAVIS_TAG
+   fi
+   
+   echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
+   if [[ (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
+      echo "The image registry creds are present, building the image "
    else
-       echo "[INFO] This travis build is not for a tagged TRAVIS_TAG and its empty, hence skipping the build and publish of the image DOCKER_USERNAME/IMAGE_NAME"
+      echo "The image registry creds are not present, please provide it correctly and try again."
+      sleep 1
+      exit 1
    fi
    
    if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
