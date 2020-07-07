@@ -81,7 +81,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
          echo "Building the image"
       else
-         echo "[ERROR] Either UTILS_IMAGE_NAME or UTILS_IMAGE_TAG or both are empty, please provide correct image name and tag name from env.sh for building utils image and try again."
+         echo "[ERROR] Either UTILS_IMAGE_NAME or UTILS_IMAGE_TAG or both are empty, please provide correct image name and tag name for building the utils image and try again."
          sleep 1
          exit 1
       fi
