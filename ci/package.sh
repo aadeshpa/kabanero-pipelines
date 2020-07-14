@@ -81,7 +81,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
          #echo "Running Docker build"  
          #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG .
-         echo "[INFO] Running docker build for image url : $IMAGE_REGISTRY/IMAGE_REGISTRY_USERNAME/UTILS_IMAGE_NAME:UTILS_IMAGE_TAG"
+         echo "[INFO] Running docker build for image url : $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
          echo "Building the image"
          if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
             echo "Building the image using image_build_option = $image_build_option"
