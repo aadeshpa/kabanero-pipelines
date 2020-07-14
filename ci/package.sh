@@ -86,7 +86,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
             echo "Building the image using image_build_option = $image_build_option"
             echo "[INFO] Running docker build for image url : $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
-            docker build -t $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+            docker build -t $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG .
          elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
               echo "Building the image using image_build_option=$image_build_option"
          elif [[ ( -z "$image_build_option" ) ]]; then
