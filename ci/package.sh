@@ -112,6 +112,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               buildah bud -t $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG .
               if [ $? == 0 ]; then
                  echo "[INFO] The buildah container image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was build successfully"
+                 echo "$IMAGE_REGISTRY_PASSWORD" | buildah login -u $IMAGE_REGISTRY_USERNAME --password-stdin $IMAGE_REGISTRY 
               else
                  echo "[ERROR] The buildah container image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG build failed, please check the logs."
                  sleep 1
