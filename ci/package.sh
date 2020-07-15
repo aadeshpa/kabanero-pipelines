@@ -77,12 +77,10 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    
    echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
    if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
+      echo "The image registry creds are present, building the image "
       if [[ ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
          echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
-         #echo "Running Docker build"  
-         #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TRAVIS_TAG .
 
-         echo "Building the image"
          if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
             echo "Building the image using image_build_option = $image_build_option"
             echo "[INFO] Running docker build for image url : $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
@@ -121,7 +119,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          sleep 1
          exit 1
       fi
-      echo "The image registry creds are present, building the image "
+      
    else
       echo "The image registry is empty or the registry credentials are not present or both, please provide it correctly and try again."
       sleep 1
