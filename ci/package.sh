@@ -117,7 +117,14 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
                  echo "$IMAGE_REGISTRY_PASSWORD" | buildah login -u $IMAGE_REGISTRY_USERNAME --password-stdin $IMAGE_REGISTRY
                  # Running actual buildah push command to push the image  to the registry using buildah.
                  echo "[INFO] Pushing the image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG to $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG "
-                 buildah push $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+                 buildah push $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG docker://$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+                 if [ $? == 0 ]; then
+                    echo "[INFO] The buildah container image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was successfully pushed to $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"     
+                 else
+                    echo "[ERROR] The buildah container image push failed for this image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG, please check the logs"
+                    sleep 1
+                    exit 1
+                 fi    
               else
                  echo "[ERROR] The buildah container image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG build failed, please check the logs."
                  sleep 1
