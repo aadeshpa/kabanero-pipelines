@@ -174,7 +174,7 @@ if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "
    elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
       echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
       
-      image_digest_value=$( skopeo inspect docker://"$IMAGE_REGISTRY_HOST"/"$PROJECT"/"$STACK_NAME":"$VERSION" | jq '.Digest' )
+      image_digest_value=$( skopeo inspect docker://"$IMAGE_REGISTRY"/"$IMAGE_REGISTRY_USERNAME"/"$UTILS_IMAGE_NAME":"$UTILS_IMAGE_TAG" | jq '.Digest' )
       echo "[INFO] using skopeo image_digest_value=$image_digest_value"
       
    fi
