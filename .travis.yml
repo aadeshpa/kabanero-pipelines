@@ -21,7 +21,7 @@ script:
     sudo apt-get -qq -y install buildah;
   - echo "installing skopeo";
     sudo apt update;
-    sudo apt -y install snapd;
+    sudo apt install snapd;
     sudo snap -y install skopeo --edge;
 
 # note before_deploy will run before each deploy provider
