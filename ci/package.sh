@@ -170,17 +170,19 @@ if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "
       #This is to remove double quotes at the beginning and the end of the digest value found by above command
       image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
       echo "[INFO] image_digest_value=$image_digest_value"
-      #echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
-      #find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
-      #if [ $? == 0 ]; then
-      #   echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline taks yaml files successfully"
-      #else
-      #   echo "[ERROR] There was some error in updating the string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files."
-      #   sleep 1
-      #   exit 1
-      #fi
+
    elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
       echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
+   fi
+   
+   echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
+   find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
+   if [ $? == 0 ]; then
+      echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline taks yaml files successfully"
+   else
+      echo "[ERROR] There was some error in updating the string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files."
+      sleep 1
+      exit 1
    fi
 else
     echo "[ERROR] One or more of the parameters IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct image registry and image details for fetching the digest value of the utils image and try again."
