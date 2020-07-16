@@ -7,8 +7,6 @@ set -e
 # expose an extension point for running before main 'package' processing
 exec_hooks $script_dir/ext/pre_package.d
 
-image_build_option=$1
-
 pipelines_dir=$base_dir/pipelines/incubator
 eventing_pipelines_dir=$base_dir/pipelines/incubator/events
 gitops_pipelines_dir=$base_dir/pipelines/experimental/gitops
@@ -73,7 +71,7 @@ fi
 
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
-   echo "[INFO] Building image using $image_build_option" 
+   echo "[INFO] Building image using USE_BUILDAH=$USE_BUILDAH" 
    
    if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
       echo "The image registry creds are present, building the image "
@@ -82,8 +80,8 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          echo "current dir before build image"
          pwd
          cd ./pipelines/docker/kabanero-utils/
-         if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
-            echo "Building the image using image_build_option = $image_build_option"
+         if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
+            echo "Building the image using USE_BUILDAH = $USE_BUILDAH"
             echo "[INFO] Running docker build for image url : $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
             # Running actual docker build command to build the image using docker.
             #cd ./pipelines/docker/kabanero-utils/
@@ -106,8 +104,8 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
                sleep 1
                exit 1
             fi
-         elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
-              echo "Building the image using image_build_option=$image_build_option"
+         elif [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
+              echo "Building the image using USE_BUILDAH=$USE_BUILDAH"
               
               buildah bud -t $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG .
               if [ $? == 0 ]; then
@@ -130,12 +128,8 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
                  sleep 1
                  exit 1
               fi
-         elif [[ ( -z "$image_build_option" ) ]]; then
-              echo "[ERROR] Input to the script is empty, valid input to this script is either 'docker' or 'buildah'"
-              sleep 1;
-              exit 1;
-         else
-              echo "[ERROR] Input to the script is not correct, valid input values to this script are either 'docker' or 'buildah'. Please fix it and try again. "
+         elif [[ ( -z "$USE_BUILDAH" ) ]]; then
+              echo "[ERROR] USE_BUILDAH environment variable is empty, update the variable value and try again"
               sleep 1;
               exit 1;
          fi
@@ -155,26 +149,23 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
       exit 1
    fi
    
-
 else
-   echo "We are not building the utils image since IMAGE_REGISTRY_PUBLISH is not set to true "
+   echo "[INFO] We are not building the utils image since IMAGE_REGISTRY_PUBLISH is not set to true "
 fi
 
 #We have to fetch the digest value for the utils image based on the image details
 
 if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
    echo "Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
-   if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
+   if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
       echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using docker inspect"
       image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG | jq 'values[0]'); 
       #This is to remove double quotes at the beginning and the end of the digest value found by above command
       image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
       echo "[INFO] using docker inspect image_digest_value=$image_digest_value"
 
-   elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
+   elif [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
       echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
-      echo "checking skopeo runs"
-      skopeo
       image_digest_value_withquote=$( skopeo inspect docker://"$IMAGE_REGISTRY"/"$IMAGE_REGISTRY_USERNAME"/"$UTILS_IMAGE_NAME":"$UTILS_IMAGE_TAG" | jq '.Digest' )
       if [ $? == 0 ]; then
          image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
@@ -197,7 +188,7 @@ if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "
       exit 1
    fi
 else
-    echo "[ERROR] One or more of the parameters IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct image registry and image details for fetching the digest value of the utils image and try again."
+    echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct image registry and image details for fetching the digest value of the utils image and try again."
     echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
     echo "[ERROR] IMAGE_REGISTRY_USERNAME=$IMAGE_REGISTRY_USERNAME"
     echo "[ERROR] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
