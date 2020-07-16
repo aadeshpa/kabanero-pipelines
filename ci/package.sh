@@ -153,8 +153,13 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    
 
 else
-   echo "We are not building the utils image"
+   echo "We are not building the utils image since IMAGE_REGISTRY_PUBLISH is not set to true "
 fi
+
+#We have to fetch the digest value for the utils image based on the image details
+echo "current directory"
+pwd
+
 
 #End
      
