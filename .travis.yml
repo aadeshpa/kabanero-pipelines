@@ -22,7 +22,7 @@ script:
   - echo "installing skopeo";
     sudo apt update;
     sudo apt install snapd;
-    sudo snap -y install skopeo --edge;
+    sudo snap install skopeo --edge;
 
 # note before_deploy will run before each deploy provider
 before_deploy:
