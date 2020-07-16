@@ -139,6 +139,10 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               sleep 1;
               exit 1;
          fi
+         cd ../../../
+         echo "current directory"
+         pwd
+
       else
          echo "[ERROR] Either UTILS_IMAGE_NAME or UTILS_IMAGE_TAG or both are empty, please provide correct image name and tag name for building the utils image and try again."
          sleep 1
@@ -157,11 +161,7 @@ else
 fi
 
 #We have to fetch the digest value for the utils image based on the image details
-echo "current directory"
-pwd
-cd ../../../
-echo "original dir after retracting"
-pwd
+
 if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
    echo "Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
    if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
