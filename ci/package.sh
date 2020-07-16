@@ -59,28 +59,28 @@ setup_utils_image_url(){
 }
 
 #Start
+   
+#setting the Utils image name as Default image name in case it is empty or not provided from env.sh
+if [ -z "$UTILS_IMAGE_NAME" ]; then
+   UTILS_IMAGE_NAME=$DEFAULT_IMAGE_NAME
+fi
+#setting up the utils image tagname as TRAVIS_TAG in case it is not empty, which is during Travis automation step.
+# In other cases UTILS_IMAGE_TAG will be exported from env.sh file.
+if [ ! -z "$TRAVIS_TAG" ] ; then
+   echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
+   UTILS_IMAGE_TAG=$TRAVIS_TAG
+fi
 
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
-   echo "[INFO] Building image using $image_build_option"
+   echo "[INFO] Building image using $image_build_option" 
    
-   #setting the Utils image name as Default image name in case it is empty or not provided from env.sh
-   if [ -z "$UTILS_IMAGE_NAME" ]; then
-      UTILS_IMAGE_NAME=$DEFAULT_IMAGE_NAME
-   fi
-   #setting up the utils image tagname as TRAVIS_TAG in case it is not empty, which is during Travis automation step.
-   # In other cases UTILS_IMAGE_TAG will be exported from env.sh file.
-   if [ ! -z "$TRAVIS_TAG" ] ; then
-      UTILS_IMAGE_TAG=$TRAVIS_TAG
-   fi
-
-   
-   echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
    if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
       echo "The image registry creds are present, building the image "
       if [[ ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
          echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
-         
+         echo "current dir before build image"
+         pwd
          cd ./pipelines/docker/kabanero-utils/
          if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
             echo "Building the image using image_build_option = $image_build_option"
@@ -159,6 +159,23 @@ fi
 #We have to fetch the digest value for the utils image based on the image details
 echo "current directory"
 pwd
+if [[ (! -z "$IMAGE_REGISTRY") (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
+   echo "Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
+   if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
+      echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using docker inspect"
+   elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
+      echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
+   fi
+else
+    echo "[ERROR] One or more of the parameters IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct image registry and image details for fetching the digest value of the utils image and try again."
+    echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
+    echo "[ERROR] IMAGE_REGISTRY_USERNAME=$IMAGE_REGISTRY_USERNAME"
+    echo "[ERROR] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
+    echo "[ERROR] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
+    sleep 1
+    exit 1
+fi
+
 
 
 #End
