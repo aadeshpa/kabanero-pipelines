@@ -73,13 +73,14 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using USE_BUILDAH=$USE_BUILDAH" 
    
-   if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
+   if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
       echo "The image registry creds are present, building the image "
-      if [[ ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
+      
          echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
          echo "current dir before build image"
          pwd
          cd ./pipelines/docker/kabanero-utils/
+         
          destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
          if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
             echo "Building the image using USE_BUILDAH = $USE_BUILDAH"
@@ -137,15 +138,15 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          cd ../../../
          echo "current directory"
          pwd
-
-      else
-         echo "[ERROR] Either UTILS_IMAGE_NAME or UTILS_IMAGE_TAG or both are empty, please provide correct image name and tag name for building the utils image and try again."
-         sleep 1
-         exit 1
-      fi
       
    else
       echo "The image registry is empty or the registry credentials are not present or both, please provide it correctly and try again."
+      echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct evnrionment variables for image registry and image details for building the image and try again."
+      echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
+      echo "[ERROR] IMAGE_REGISTRY_USERNAME=$IMAGE_REGISTRY_USERNAME"
+      echo "[ERROR] IMAGE_REGISTRY_PASSWORD=$IMAGE_REGISTRY_PASSWORD"
+      echo "[ERROR] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
+      echo "[ERROR] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
       sleep 1
       exit 1
    fi
