@@ -24,7 +24,7 @@ script:
     sudo apt install snapd;
     sudo snap install skopeo --edge --devmode;
     echo "checking skopeo works";
-    skopeo;
+    skopeo inspect docker://docker.io/aadeshpa/kabanero-utils:test-release-320 | jq '.Digest';
 
 # note before_deploy will run before each deploy provider
 before_deploy:
