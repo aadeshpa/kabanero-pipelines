@@ -159,7 +159,7 @@ fi
 #We have to fetch the digest value for the utils image based on the image details
 echo "current directory"
 pwd
-if [[ (! -z "$IMAGE_REGISTRY") (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
+if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
    echo "Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
    if [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "docker" ) ]]; then
       echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using docker inspect"
