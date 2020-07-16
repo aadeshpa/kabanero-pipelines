@@ -169,14 +169,21 @@ if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "
       image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG | jq 'values[0]'); 
       #This is to remove double quotes at the beginning and the end of the digest value found by above command
       image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-      echo "[INFO] image_digest_value=$image_digest_value"
+      echo "[INFO] using docker inspect image_digest_value=$image_digest_value"
 
    elif [[ ( ! -z "$image_build_option" ) && ( "$image_build_option" == "buildah" ) ]]; then
       echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
       echo "checking skopeo runs"
       skopeo
-      image_digest_value=$( skopeo inspect docker://"$IMAGE_REGISTRY"/"$IMAGE_REGISTRY_USERNAME"/"$UTILS_IMAGE_NAME":"$UTILS_IMAGE_TAG" | jq '.Digest' )
-      echo "[INFO] using skopeo image_digest_value=$image_digest_value"
+      image_digest_value_withquote=$( skopeo inspect docker://"$IMAGE_REGISTRY"/"$IMAGE_REGISTRY_USERNAME"/"$UTILS_IMAGE_NAME":"$UTILS_IMAGE_TAG" | jq '.Digest' )
+      if [ $? == 0 ]; then
+         image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
+         image_digest_value=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME@$image_digest_value
+         echo "[INFO] using skopeo image_digest_value=$image_digest_value"
+      else
+         echo "[ERROR] Some issue in fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
+         sleep 1
+         exit 1
       
    fi
    
