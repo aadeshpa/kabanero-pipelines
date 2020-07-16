@@ -80,51 +80,52 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          echo "current dir before build image"
          pwd
          cd ./pipelines/docker/kabanero-utils/
+         destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
          if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
             echo "Building the image using USE_BUILDAH = $USE_BUILDAH"
-            echo "[INFO] Running docker build for image url : $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
+            echo "[INFO] Running docker build for image url : $destination_image_url"
             # Running actual docker build command to build the image using docker.
             #cd ./pipelines/docker/kabanero-utils/
-            docker build -t $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG .       
+            docker build -t $destination_image_url .       
             if [ $? == 0 ]; then
-               echo "[INFO] Docker image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was build successfully" 
-               echo "[INFO] Pushing the image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG to $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG "
+               echo "[INFO] Docker image $destination_image_url was build successfully" 
+               echo "[INFO] Pushing the image $destination_image_url "
                echo "$IMAGE_REGISTRY_PASSWORD" | docker login -u $IMAGE_REGISTRY_USERNAME --password-stdin
                # Running actual docker push command to push the image  to the registry using docker.
-               docker push $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+               docker push $destination_image_url
                if [ $? == 0 ]; then
-                  echo "[INFO] The docker image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was successfully pushed to $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"     
+                  echo "[INFO] The docker image was successfully pushed to $destination_image_url"     
                else
-                  echo "[ERROR] The docker push failed for this image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG, please check the logs"
+                  echo "[ERROR] The docker push failed for this image $destination_image_url, please check the logs"
                   sleep 1
                   exit 1
                fi    
             else
-               echo "[ERROR] The docker image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG build failed, please check the logs."
+               echo "[ERROR] The docker image $destination_image_url build failed, please check the logs."
                sleep 1
                exit 1
             fi
          elif [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
               echo "Building the image using USE_BUILDAH=$USE_BUILDAH"
               
-              buildah bud -t $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG .
+              buildah bud -t $destination_image_url .
               if [ $? == 0 ]; then
-                 echo "[INFO] The buildah container image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was build successfully"
+                 echo "[INFO] The buildah container image $destination_image_url was build successfully"
                  
                  #Logging in via buildah login commmand to the Image_Registry
                  echo "$IMAGE_REGISTRY_PASSWORD" | buildah login -u $IMAGE_REGISTRY_USERNAME --password-stdin $IMAGE_REGISTRY
                  # Running actual buildah push command to push the image  to the registry using buildah.
-                 echo "[INFO] Pushing the image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG to $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG "
-                 buildah push $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG docker://$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+                 echo "[INFO] Pushing the image to $destination_image_url "
+                 buildah push $destination_image_url docker://$destination_image_url
                  if [ $? == 0 ]; then
-                    echo "[INFO] The buildah container image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was successfully pushed to $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"     
+                    echo "[INFO] The buildah container image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was successfully pushed to $destination_image_url"     
                  else
-                    echo "[ERROR] The buildah container image push failed for this image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG, please check the logs"
+                    echo "[ERROR] The buildah container image push failed for this image $destination_image_url, please check the logs"
                     sleep 1
                     exit 1
                  fi    
               else
-                 echo "[ERROR] The buildah container image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG build failed, please check the logs."
+                 echo "[ERROR] The buildah container image $destination_image_url build failed, please check the logs."
                  sleep 1
                  exit 1
               fi
@@ -156,23 +157,25 @@ fi
 #We have to fetch the digest value for the utils image based on the image details
 
 if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
-   echo "Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG"
+   destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+   echo "Fetching the image digest value for image $destination_image_url"
+   
    if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
-      echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using docker inspect"
-      image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG | jq 'values[0]'); 
+      echo "[INFO] Fetching the image digest value for image $destination_image_url using docker inspect"
+      image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $destination_image_url | jq 'values[0]'); 
       #This is to remove double quotes at the beginning and the end of the digest value found by above command
       image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
       echo "[INFO] using docker inspect image_digest_value=$image_digest_value"
 
    elif [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
-      echo "[INFO] Fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
+      echo "[INFO] Fetching the image digest value for image $destination_image_url using skopeo inspect"
       image_digest_value_withquote=$( skopeo inspect docker://"$IMAGE_REGISTRY"/"$IMAGE_REGISTRY_USERNAME"/"$UTILS_IMAGE_NAME":"$UTILS_IMAGE_TAG" | jq '.Digest' )
       if [ $? == 0 ]; then
          image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
          image_digest_value=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME@$image_digest_value
          echo "[INFO] using skopeo image_digest_value=$image_digest_value"
       else
-         echo "[ERROR] Some issue in fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
+         echo "[ERROR] Some issue in fetching the image digest value for image $destination_image_url using skopeo inspect"
          sleep 1
          exit 1
       fi
