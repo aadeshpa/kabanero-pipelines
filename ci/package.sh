@@ -184,7 +184,7 @@ if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "
          echo "[ERROR] Some issue in fetching the image digest value for image $IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG using skopeo inspect"
          sleep 1
          exit 1
-      
+      fi
    fi
    
    echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
