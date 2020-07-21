@@ -69,6 +69,11 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) && (! -z "$TRAVIS_TAG") ]]; then
    UTILS_IMAGE_TAG=$TRAVIS_TAG
 fi
 
+#setting default option to build image as docker. If you need to run the script with Buildah option, update USE_BUILDAH=true in env.sh
+if [[ ( -z "$USE_BUILDAH" ) ]]; then
+   USE_BUILDAH = false
+fi
+
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using USE_BUILDAH=$USE_BUILDAH" 
