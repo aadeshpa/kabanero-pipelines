@@ -85,11 +85,10 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          login_container_registry "docker"
       else
          login_container_registry "buildah"
-      fi
-       
+      fi       
    fi
    
-   if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
+   if [[ (! -z $IMAGE_REGISTRY) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
       echo "The image registry creds are present, building the image "
       
          echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
@@ -107,7 +106,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
             if [ $? == 0 ]; then
                echo "[INFO] Docker image $destination_image_url was build successfully" 
                echo "[INFO] Pushing the image $destination_image_url "
-               #echo "$IMAGE_REGISTRY_PASSWORD" | docker login -u $IMAGE_REGISTRY_USERNAME --password-stdin
+               
                # Running actual docker push command to push the image  to the registry using docker.
                docker push $destination_image_url
                if [ $? == 0 ]; then
@@ -128,9 +127,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               buildah bud -t $destination_image_url .
               if [ $? == 0 ]; then
                  echo "[INFO] The buildah container image $destination_image_url was build successfully"
-                 
-                 #Logging in via buildah login commmand to the Image_Registry
-                 #echo "$IMAGE_REGISTRY_PASSWORD" | buildah login -u $IMAGE_REGISTRY_USERNAME --password-stdin $IMAGE_REGISTRY
+                
                  # Running actual buildah push command to push the image  to the registry using buildah.
                  echo "[INFO] Pushing the image to $destination_image_url "
                  buildah push $destination_image_url docker://$destination_image_url
@@ -156,11 +153,8 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          pwd
       
    else
-      echo "The image registry is empty or the registry credentials are not present or both, please provide it correctly and try again."
       echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct evnrionment variables for image registry and image details for building the image and try again."
       echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
-      echo "[ERROR] IMAGE_REGISTRY_USERNAME=$IMAGE_REGISTRY_USERNAME"
-      echo "[ERROR] IMAGE_REGISTRY_PASSWORD=$IMAGE_REGISTRY_PASSWORD"
       echo "[ERROR] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
       echo "[ERROR] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
       sleep 1
