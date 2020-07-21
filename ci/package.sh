@@ -57,7 +57,7 @@ setup_utils_image_url(){
 }
 
 login_container_registry(){
- container_registry_login_option = $1
+ local container_registry_login_option =$1
  echo "[INFO] Logging in the container registry using $container_registry_login_option "
 }
 
