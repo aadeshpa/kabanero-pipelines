@@ -56,6 +56,11 @@ setup_utils_image_url(){
  
 }
 
+login_container_registry(){
+ container_registry_login_option = $1
+ echo "[INFO] Logging in the container registry using $container_registry_login_option "
+}
+
 #Start
    
 #setting the Utils image name as Default image name in case it is empty or not provided from env.sh
@@ -77,6 +82,16 @@ fi
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using USE_BUILDAH=$USE_BUILDAH" 
+   
+   #Login to the registry if the username and password are present
+   if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
+      if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
+         login_container_registry docker
+      else
+         login_container_registry buildah
+      fi
+       
+   fi
    
    if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
       echo "The image registry creds are present, building the image "
