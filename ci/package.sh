@@ -165,9 +165,15 @@ fi
 if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
    destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
    echo "Fetching the image digest value for image $destination_image_url"
-   
+
    if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
       echo "[INFO] Fetching the image digest value for image $destination_image_url using docker inspect"
+      docker pull $destination_image_url
+      if [ $? != 0 ]; then
+          echo "[ERROR] There is no such image with the image url = $destination_image_url hence the image could not be pulled to fetch the digest value, please verify the correct image url and try again."
+          sleep 1
+          exit 1
+      fi
       image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $destination_image_url | jq 'values[0]');
       if [[ ( -z "$image_digest_value_withquote" ) ]]; then
          echo "[ERROR] The digest value for the image url : $destination_image_url could not be fetched using docker inspect. Please verify the image with the url exists and try again."
