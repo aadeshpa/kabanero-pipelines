@@ -86,9 +86,9 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    #Login to the registry if the username and password are present
    if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
       if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
-         login_container_registry docker
+         login_container_registry "docker"
       else
-         login_container_registry buildah
+         login_container_registry "buildah"
       fi
        
    fi
