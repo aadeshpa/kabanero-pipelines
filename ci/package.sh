@@ -51,14 +51,16 @@ package() {
     echo ${tarballSHA}>> $assets_dir/${prefix}-pipelines-tar-gz-sha256
 }
 
-setup_utils_image_url(){
+setup_utils_image_url() {
+
  echo "inside method setup for image url"
  
 }
 
-login_container_registry(){
- local container_registry_login_option =$1
- echo "[INFO] Logging in the container registry using $container_registry_login_option "
+login_container_registry() {
+ 
+ local container_registry_login_option=$1
+ echo "[INFO] inside login_container_registry Logging in the container registry using $container_registry_login_option "
 }
 
 #Start
