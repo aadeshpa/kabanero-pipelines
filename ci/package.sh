@@ -168,7 +168,12 @@ if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "
    
    if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
       echo "[INFO] Fetching the image digest value for image $destination_image_url using docker inspect"
-      image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $destination_image_url | jq 'values[0]'); 
+      image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $destination_image_url | jq 'values[0]');
+      if [ $? != 0 ]; then
+         echo "[ERROR] The digest value for the image url : $destination_image_url could not be fetched using docker inspect. Please verify the image with the url exists and try again."
+         sleep 1
+         exit 1
+      fi
       #This is to remove double quotes at the beginning and the end of the digest value found by above command
       image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
       echo "[INFO] using docker inspect image_digest_value=$image_digest_value"
@@ -181,7 +186,7 @@ if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_USERNAME" ) && ( ! -z "
          image_digest_value=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME@$image_digest_value
          echo "[INFO] using skopeo image_digest_value=$image_digest_value"
       else
-         echo "[ERROR] Some issue in fetching the image digest value for image $destination_image_url using skopeo inspect"
+         echo "[ERROR] The digest value for the image url : $destination_image_url could not be fetched using skopeo inspect.Please verify the image with the url exists and try again"
          sleep 1
          exit 1
       fi
