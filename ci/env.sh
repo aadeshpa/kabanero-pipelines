@@ -44,7 +44,7 @@ export UTILS_IMAGE_TAG=0.9.0
 # export INDEX_VERSION=SNAPSHOT
 
 # Use buildah instead of docker to build and push docker images when the value is true
-export USE_BUILDAH=true
+# export USE_BUILDAH=true
 
 # Specify a wrapper where required for long-running commands
 CI_WAIT_FOR=
