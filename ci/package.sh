@@ -54,6 +54,7 @@ package() {
 login_container_registry() {
     local container_registry_login_option=$1
     echo "[INFO] inside login_container_registry method Logging in the container registry using $container_registry_login_option "
+    echo "$IMAGE_REGISTRY_PASSWORD" | $container_registry_login_option login -u $IMAGE_REGISTRY_USERNAME --password-stdin
 }
 
 #Start
@@ -106,7 +107,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
             if [ $? == 0 ]; then
                echo "[INFO] Docker image $destination_image_url was build successfully" 
                echo "[INFO] Pushing the image $destination_image_url "
-               echo "$IMAGE_REGISTRY_PASSWORD" | docker login -u $IMAGE_REGISTRY_USERNAME --password-stdin
+               #echo "$IMAGE_REGISTRY_PASSWORD" | docker login -u $IMAGE_REGISTRY_USERNAME --password-stdin
                # Running actual docker push command to push the image  to the registry using docker.
                docker push $destination_image_url
                if [ $? == 0 ]; then
@@ -129,7 +130,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
                  echo "[INFO] The buildah container image $destination_image_url was build successfully"
                  
                  #Logging in via buildah login commmand to the Image_Registry
-                 echo "$IMAGE_REGISTRY_PASSWORD" | buildah login -u $IMAGE_REGISTRY_USERNAME --password-stdin $IMAGE_REGISTRY
+                 #echo "$IMAGE_REGISTRY_PASSWORD" | buildah login -u $IMAGE_REGISTRY_USERNAME --password-stdin $IMAGE_REGISTRY
                  # Running actual buildah push command to push the image  to the registry using buildah.
                  echo "[INFO] Pushing the image to $destination_image_url "
                  buildah push $destination_image_url docker://$destination_image_url
