@@ -51,15 +51,9 @@ package() {
     echo ${tarballSHA}>> $assets_dir/${prefix}-pipelines-tar-gz-sha256
 }
 
-setup_utils_image_url() {
-
- echo "inside method setup for image url"
- 
-}
-
 login_container_registry() {
     local container_registry_login_option=$1
-    echo "[INFO] inside login_container_registry Logging in the container registry using $container_registry_login_option "
+    echo "[INFO] inside login_container_registry method Logging in the container registry using $container_registry_login_option "
 }
 
 #Start
@@ -85,7 +79,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "[INFO] Building image using USE_BUILDAH=$USE_BUILDAH" 
    
    #Login to the registry if the username and password are present
-   if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") &&  (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
+   if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") && (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
       if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
          login_container_registry "docker"
       else
