@@ -58,9 +58,8 @@ setup_utils_image_url() {
 }
 
 login_container_registry() {
- 
- local container_registry_login_option=$1
- echo "[INFO] inside login_container_registry Logging in the container registry using $container_registry_login_option "
+    local container_registry_login_option=$1
+    echo "[INFO] inside login_container_registry Logging in the container registry using $container_registry_login_option "
 }
 
 #Start
