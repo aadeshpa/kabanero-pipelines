@@ -93,6 +93,7 @@ fetch_image_digest() {
    fi
    
    echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
+   cd ../../../
    echo "pwd"
    pwd
    echo "ls -ltr"
@@ -209,9 +210,9 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               sleep 1;
               exit 1;
          fi
-         cd ../../../
-         echo "current directory"
-         pwd
+         #cd ../../../
+         #echo "current directory"
+         #pwd
       
    else
       echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct evnrionment variables for image registry and image details for building the image and try again."
