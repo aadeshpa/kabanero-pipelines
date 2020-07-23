@@ -93,6 +93,14 @@ fetch_image_digest() {
    fi
    
    echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
+   echo "pwd"
+   pwd
+   echo "ls -ltr"
+   ls -ltr
+   echo "find all the files with yaml"
+   find ./ -type f -name '*.yaml'
+   
+   echo "find and sed replace"
    find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
    if [ $? == 0 ]; then
       echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline taks yaml files successfully"
