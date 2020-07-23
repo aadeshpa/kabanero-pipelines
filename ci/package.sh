@@ -101,7 +101,7 @@ replace_image_url() {
 
    local image_digest_value=$1
    echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
-   cd ../../../
+   #cd ../../../
    echo "pwd"
    pwd
    echo "ls -ltr"
@@ -232,7 +232,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               sleep 1;
               exit 1;
          fi
-         #cd ../../../
+         cd ../../../
          #echo "current directory"
          #pwd
       
