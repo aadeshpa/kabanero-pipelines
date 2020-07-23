@@ -198,6 +198,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
                exit 1
             fi
             
+            cd ../../../
             #calling method to fetch image digest value
             fetch_image_digest $destination_image_url
             
@@ -224,6 +225,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
                  exit 1
               fi
               
+              cd ../../../
               #calling method to fetch image digest value
               fetch_image_digest $destination_image_url
               
@@ -232,7 +234,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               sleep 1;
               exit 1;
          fi
-         cd ../../../
+         #cd ../../../
          #echo "current directory"
          #pwd
       
