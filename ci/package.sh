@@ -92,25 +92,9 @@ fetch_image_digest() {
       echo "[INFO] using skopeo image_digest_value=$image_digest_value"
    fi
    
+   #calling method to replace the image digest value in all the yaml files.
    replace_image_url $image_digest_value
-   #echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
-   #cd ../../../
-   #echo "pwd"
-   #pwd
-   #echo "ls -ltr"
-   #ls -ltr
-   #echo "find all the files with yaml"
-   #find ./ -type f -name '*.yaml'
    
-   #echo "find and sed replace"
-   #find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
-   #if [ $? == 0 ]; then
-   #   echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline taks yaml files successfully"
-   #else
-   #   echo "[ERROR] There was some error in updating the string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files."
-   #   sleep 1
-   #   exit 1
-   #fi
 }
 
 replace_image_url() {
@@ -229,6 +213,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               
               #calling method to fetch image digest value
               fetch_image_digest $destination_image_url
+              
          elif [[ ( -z "$USE_BUILDAH" ) ]]; then
               echo "[ERROR] USE_BUILDAH environment variable is empty, update the variable value and try again"
               sleep 1;
