@@ -138,6 +138,19 @@ if [[ ( -z "$USE_BUILDAH" ) ]]; then
    USE_BUILDAH = false
 fi
 
+#preparing destination image url based on given inputs
+if [[ (! -z "$IMAGE_REGISTRY") && ( ! -z "$IMAGE_REGISTRY_ORG" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
+   destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG   
+else
+   echo "[ERROR] Image url cannot be formed ,one or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct envrionment variables for image registry and image details for building the image and try again."
+   echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
+   echo "[ERROR] IMAGE_REGISTRY_ORG=$IMAGE_REGISTRY_ORG"
+   echo "[ERROR] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
+   echo "[ERROR] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
+   sleep 1
+   exit 1
+fi
+
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "We will publish utils image"
    echo "[INFO] Building image using USE_BUILDAH=$USE_BUILDAH" 
@@ -159,7 +172,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          pwd
          cd ./pipelines/docker/kabanero-utils/
          
-         destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+         #destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
          if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
             echo "Building the image using USE_BUILDAH = $USE_BUILDAH"
             echo "[INFO] Running docker build for image url : $destination_image_url"
@@ -224,7 +237,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          #pwd
       
    else
-      echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct evnrionment variables for image registry and image details for building the image and try again."
+      echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct envrionment variables for image registry and image details for building the image and try again."
       echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
       echo "[ERROR] IMAGE_REGISTRY_ORG=$IMAGE_REGISTRY_ORG"
       echo "[ERROR] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
@@ -235,6 +248,9 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    
 else
    echo "[INFO] We are not building the utils image since IMAGE_REGISTRY_PUBLISH is not set to true "
+   #calling method to fetch image digest value
+   fetch_image_digest $destination_image_url
+
 fi
 
 #We have to fetch the digest value for the utils image based on the image details
