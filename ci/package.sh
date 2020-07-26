@@ -152,25 +152,23 @@ else
 fi
 
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
-   echo "We will publish utils image"
-   echo "[INFO] Building image using USE_BUILDAH=$USE_BUILDAH" 
+   echo "[INFO] Publishing a new utils container image" 
    
    #Login to the registry if the username and password are present
    if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") && (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
       if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
+         echo "[INFO] Logging in to the container registry using docker"
          login_container_registry "docker"
       else
+         echo "[INFO] Logging in the container registry using buildah"
          login_container_registry "buildah"
       fi       
    fi
+   # navigating to the folder where the utils container docker file is present
+   cd ./pipelines/docker/kabanero-utils/              
    
-   echo "current dir before build image"
-   pwd
-   cd ./pipelines/docker/kabanero-utils/
-         
-         
    if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
-      echo "Building the image using USE_BUILDAH = $USE_BUILDAH"
+      echo "[INFO] Building the utils container image using USE_BUILDAH = $USE_BUILDAH"
       echo "[INFO] Running docker build for image url : $destination_image_url"
             
       # Running actual docker build command to build the image using docker.      
@@ -193,13 +191,15 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          sleep 1
          exit 1
       fi
-            
+      
+      #navigating to the base folder      
       cd ../../../
+      
       #calling method to fetch image digest value
       fetch_image_digest $destination_image_url
             
    elif [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
-        echo "Building the image using USE_BUILDAH=$USE_BUILDAH"
+        echo "Building the utils container image using USE_BUILDAH=$USE_BUILDAH"
               
         buildah bud -t $destination_image_url .
         if [ $? == 0 ]; then
@@ -220,8 +220,10 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
            sleep 1
            exit 1
         fi
-              
+        
+        #navigating to the base folder     
         cd ../../../
+        
         #calling method to fetch image digest value
         fetch_image_digest $destination_image_url
               
@@ -229,10 +231,9 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
         echo "[ERROR] USE_BUILDAH environment variable is empty, update the variable value and try again"
         sleep 1;
         exit 1;
-   fi
-   
+   fi  
 else
-   echo "[INFO] We are not building the utils image since IMAGE_REGISTRY_PUBLISH is not set to true "
+   echo "[INFO] We are not publishing new utils container image since IMAGE_REGISTRY_PUBLISH is not set to true "
    #calling method to fetch image digest value
    fetch_image_digest $destination_image_url
 fi
