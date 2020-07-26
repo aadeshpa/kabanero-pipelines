@@ -164,9 +164,6 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
       fi       
    fi
    
-   if [[ (! -z "$IMAGE_REGISTRY") && ( ! -z "$IMAGE_REGISTRY_ORG" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
-      echo "The image registry creds are present, building the image "
-      
          echo "Both utils image name and utils image tag are present UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME, UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
          echo "current dir before build image"
          pwd
@@ -234,16 +231,6 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               sleep 1;
               exit 1;
          fi
-      
-   else
-      echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct envrionment variables for image registry and image details for building the image and try again."
-      echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
-      echo "[ERROR] IMAGE_REGISTRY_ORG=$IMAGE_REGISTRY_ORG"
-      echo "[ERROR] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
-      echo "[ERROR] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
-      sleep 1
-      exit 1
-   fi
    
 else
    echo "[INFO] We are not building the utils image since IMAGE_REGISTRY_PUBLISH is not set to true "
