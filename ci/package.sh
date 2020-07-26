@@ -172,7 +172,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          pwd
          cd ./pipelines/docker/kabanero-utils/
          
-         #destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+         
          if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
             echo "Building the image using USE_BUILDAH = $USE_BUILDAH"
             echo "[INFO] Running docker build for image url : $destination_image_url"
@@ -234,9 +234,6 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
               sleep 1;
               exit 1;
          fi
-         #cd ../../../
-         #echo "current directory"
-         #pwd
       
    else
       echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct envrionment variables for image registry and image details for building the image and try again."
@@ -252,67 +249,7 @@ else
    echo "[INFO] We are not building the utils image since IMAGE_REGISTRY_PUBLISH is not set to true "
    #calling method to fetch image digest value
    fetch_image_digest $destination_image_url
-
 fi
-
-#We have to fetch the digest value for the utils image based on the image details
-
-#if [[ (! -z "$IMAGE_REGISTRY") && (! -z "$IMAGE_REGISTRY_ORG" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
-   #destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
-   #echo "Fetching the image digest value for image $destination_image_url"
-
-   #if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
-   #   echo "[INFO] Fetching the image digest value for image $destination_image_url using docker inspect"
-   #   docker pull $destination_image_url
-   #   if [ $? != 0 ]; then
-   #       echo "[ERROR] There is no such image with the image url = $destination_image_url hence the image could not be pulled to fetch the digest value, please verify the correct image url and try again."
-   #       sleep 1
-   #       exit 1
-   #   fi
-   #   image_digest_value_withquote=$(docker inspect --format='{{json .RepoDigests}}' $destination_image_url | jq 'values[0]');
-   #   if [[ ( -z "$image_digest_value_withquote" ) ]]; then
-   #      echo "[ERROR] The digest value for the image url : $destination_image_url could not be fetched using docker inspect. Please verify the image with the url exists and try again."
-   #      sleep 1
-   #      exit 1
-   #   fi
-   #   #This is to remove double quotes at the beginning and the end of the digest value found by above command
-   #   image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-   #   echo "[INFO] using docker inspect image_digest_value=$image_digest_value"
-
-   #elif [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
-   #   echo "[INFO] Fetching the image digest value for image $destination_image_url using skopeo inspect"
-   #   image_digest_value_withquote=$( skopeo inspect docker://"$IMAGE_REGISTRY"/"$IMAGE_REGISTRY_USERNAME"/"$UTILS_IMAGE_NAME":"$UTILS_IMAGE_TAG" | jq '.Digest' )
-   #   if [[ ( -z "$image_digest_value_withquote" ) ]]; then
-   #      echo "[ERROR] The digest value for the image url : $destination_image_url could not be fetched using skopeo inspect.Please verify the image with the url exists and try again"
-   #      sleep 1
-   #      exit 1
-   #   fi
-   #   image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-   #   image_digest_value=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME@$image_digest_value
-   #   echo "[INFO] using skopeo image_digest_value=$image_digest_value"
-   #fi
-   
-   #echo "[INFO] Replacing the utils container image string from 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files";
-   #find ./ -type f -name '*.yaml' -exec sed -i 's|'"$image_original_string"'|'"$image_digest_value"'|g' {} +
-   #if [ $? == 0 ]; then
-   #   echo "[INFO] Updated utils container image string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline taks yaml files successfully"
-   #else
-   #   echo "[ERROR] There was some error in updating the string from original 'image : $image_original_string' with 'image : $image_digest_value' in all the pipeline task yaml files."
-   #   sleep 1
-   #   exit 1
-   #fi
-#else
-   # echo "[ERROR] One or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct image registry and image details for fetching the digest value of the utils image and try again."
-   # echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
-   # echo "[ERROR] IMAGE_REGISTRY_ORG=$IMAGE_REGISTRY_ORG"
-   # echo "[ERROR] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
-   # echo "[ERROR] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
-   # sleep 1
-   # exit 1
-#fi
-
-
-
 #End
      
 package $pipelines_dir "default-kabanero"
