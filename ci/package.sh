@@ -88,7 +88,7 @@ fetch_image_digest() {
          exit 1
       fi
       image_digest_value=$(sed -e 's/^"//' -e 's/"$//' <<<"$image_digest_value_withquote");
-      image_digest_value=$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME@$image_digest_value
+      image_digest_value=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME@$image_digest_value
       echo "[INFO] using skopeo image_digest_value=$image_digest_value"
    fi
    
