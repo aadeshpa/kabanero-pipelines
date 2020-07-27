@@ -81,7 +81,7 @@ fetch_image_digest() {
 
    elif [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
       echo "[INFO] Fetching the image digest value for image $destination_image_url using skopeo inspect"
-      image_digest_value_withquote=$( skopeo inspect docker://"$IMAGE_REGISTRY"/"$IMAGE_REGISTRY_USERNAME"/"$UTILS_IMAGE_NAME":"$UTILS_IMAGE_TAG" | jq '.Digest' )
+      image_digest_value_withquote=$( skopeo inspect docker://$destination_image_url | jq '.Digest' )
       if [[ ( -z "$image_digest_value_withquote" ) ]]; then
          echo "[ERROR] The digest value for the image url : $destination_image_url could not be fetched using skopeo inspect.Please verify the image with the url exists and try again"
          sleep 1
