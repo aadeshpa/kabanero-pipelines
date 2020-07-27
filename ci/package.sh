@@ -181,10 +181,10 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
                 
          # Running actual buildah push command to push the image  to the registry using buildah.
          echo "[INFO] Pushing the image to $destination_image_url "
-         buildah push $destination_image_url_with_latest_tagname docker://$destination_image_url_with_latest_tagname
+         buildah push $destination_image_url docker://$destination_image_url
          if [ $? == 0 ]; then
             echo "[INFO] The buildah container image $destination_image_url was successfully pushed"
-            buildah push $destination_image_url docker://$destination_image_url
+            buildah push $destination_image_url_with_latest_tagname docker://$destination_image_url_with_latest_tagname
          else
             echo "[ERROR] The buildah container image push failed for this image $destination_image_url, please check the logs"
             sleep 1
