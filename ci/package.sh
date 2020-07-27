@@ -179,7 +179,7 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          echo "[INFO] Pushing the image to $destination_image_url "
          buildah push $destination_image_url docker://$destination_image_url
          if [ $? == 0 ]; then
-            echo "[INFO] The buildah container image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was successfully pushed to $destination_image_url"     
+            echo "[INFO] The buildah container image $destination_image_url was successfully pushed"     
          else
             echo "[ERROR] The buildah container image push failed for this image $destination_image_url, please check the logs"
             sleep 1
