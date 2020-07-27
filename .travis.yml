@@ -19,12 +19,6 @@ script:
     sudo apt-key add - < Release.key;
     sudo apt-get update -qq;
     sudo apt-get -qq -y install buildah;
-  - echo "installing skopeo";
-    sudo apt update;
-    sudo apt install snapd;
-    sudo snap install skopeo --edge --devmode;
-    echo "checking skopeo works";
-    skopeo inspect docker://docker.io/aadeshpa/kabanero-utils:test-release-320 | jq '.Digest';
 
 # note before_deploy will run before each deploy provider
 before_deploy:
