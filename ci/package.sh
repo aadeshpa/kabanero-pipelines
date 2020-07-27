@@ -156,18 +156,47 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    
    #Login to the registry if the username and password are present
    if [[ (! -z $IMAGE_REGISTRY) && (! -z "$IMAGE_REGISTRY_USERNAME") && (! -z "$IMAGE_REGISTRY_PASSWORD") ]]; then
-      if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
-         echo "[INFO] Logging in to the container registry using docker"
-         login_container_registry "docker"
-      else
+      if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
          echo "[INFO] Logging in the container registry using buildah"
          login_container_registry "buildah"
+      else
+         echo "[INFO] Logging in to the container registry using docker"
+         login_container_registry "docker"
       fi       
    fi
    # navigating to the folder where the utils container docker file is present
    cd ./pipelines/docker/kabanero-utils/              
    
-   if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == false ) ]]; then
+   if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
+   
+      echo "Building the utils container image using USE_BUILDAH=$USE_BUILDAH"
+              
+      buildah bud -t $destination_image_url .
+      if [ $? == 0 ]; then
+         echo "[INFO] The buildah container image $destination_image_url was build successfully"
+                
+         # Running actual buildah push command to push the image  to the registry using buildah.
+         echo "[INFO] Pushing the image to $destination_image_url "
+         buildah push $destination_image_url docker://$destination_image_url
+         if [ $? == 0 ]; then
+            echo "[INFO] The buildah container image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was successfully pushed to $destination_image_url"     
+         else
+            echo "[ERROR] The buildah container image push failed for this image $destination_image_url, please check the logs"
+            sleep 1
+            exit 1
+         fi    
+      else
+         echo "[ERROR] The buildah container image $destination_image_url build failed, please check the logs."
+         sleep 1
+         exit 1
+      fi
+        
+      #navigating to the base folder     
+      cd ../../../
+        
+      #calling method to fetch image digest value
+      fetch_image_digest $destination_image_url          
+   else
       echo "[INFO] Building the utils container image using USE_BUILDAH = $USE_BUILDAH"
       echo "[INFO] Running docker build for image url : $destination_image_url"
             
@@ -197,40 +226,6 @@ if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
       
       #calling method to fetch image digest value
       fetch_image_digest $destination_image_url
-            
-   elif [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
-        echo "Building the utils container image using USE_BUILDAH=$USE_BUILDAH"
-              
-        buildah bud -t $destination_image_url .
-        if [ $? == 0 ]; then
-           echo "[INFO] The buildah container image $destination_image_url was build successfully"
-                
-           # Running actual buildah push command to push the image  to the registry using buildah.
-           echo "[INFO] Pushing the image to $destination_image_url "
-           buildah push $destination_image_url docker://$destination_image_url
-           if [ $? == 0 ]; then
-              echo "[INFO] The buildah container image $IMAGE_REGISTRY_USERNAME/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG was successfully pushed to $destination_image_url"     
-           else
-              echo "[ERROR] The buildah container image push failed for this image $destination_image_url, please check the logs"
-              sleep 1
-              exit 1
-           fi    
-        else
-           echo "[ERROR] The buildah container image $destination_image_url build failed, please check the logs."
-           sleep 1
-           exit 1
-        fi
-        
-        #navigating to the base folder     
-        cd ../../../
-        
-        #calling method to fetch image digest value
-        fetch_image_digest $destination_image_url
-              
-   elif [[ ( -z "$USE_BUILDAH" ) ]]; then
-        echo "[ERROR] USE_BUILDAH environment variable is empty, update the variable value and try again"
-        sleep 1;
-        exit 1;
    fi  
 else
    echo "[INFO] We are not publishing new utils container image since IMAGE_REGISTRY_PUBLISH is not set to true "
