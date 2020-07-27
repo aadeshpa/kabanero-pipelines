@@ -54,7 +54,7 @@ package() {
 login_container_registry() {
     local container_registry_login_option=$1
     echo "[INFO] inside login_container_registry method Logging in the container registry using $container_registry_login_option "
-    echo "$IMAGE_REGISTRY_PASSWORD" | $container_registry_login_option login -u $IMAGE_REGISTRY_USERNAME --password-stdin
+    echo "$IMAGE_REGISTRY_PASSWORD" | $container_registry_login_option login -u $IMAGE_REGISTRY_USERNAME --password-stdin $IMAGE_REGISTRY
 }
 
 fetch_image_digest() {
