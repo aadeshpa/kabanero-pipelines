@@ -132,6 +132,11 @@ then
     export IMAGE_REGISTRY_ORG=kabanero
 fi
 
+#setting the Utils image name as Default image name in case it is empty or not provided
+if [ -z "$UTILS_IMAGE_NAME" ]; then
+   UTILS_IMAGE_NAME=kabanero-utils
+fi
+
 # image registry for publishing stack
 if [ -z "$IMAGE_REGISTRY" ]
 then
