@@ -17,7 +17,7 @@ mkdir -p $assets_dir
 
 image_original_string=kabanero/kabanero-utils:latest
 DOCKER_KABANERO_ACCOUNT=kabanero
-DEFAULT_IMAGE_NAME=kabanero-utils
+
 
 package() {
     local pipelines_dir=$1
@@ -122,10 +122,6 @@ replace_image_url() {
 
 #Start
    
-#setting the Utils image name as Default image name in case it is empty or not provided from env.sh
-if [ -z "$UTILS_IMAGE_NAME" ]; then
-   UTILS_IMAGE_NAME=$DEFAULT_IMAGE_NAME
-fi
 #setting up the utils image tagname as TRAVIS_TAG in case it is not empty, which is during Travis automation step.
 # In other cases UTILS_IMAGE_TAG will be exported from env.sh file.
 if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) && (! -z "$TRAVIS_TAG") ]]; then
