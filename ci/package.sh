@@ -140,6 +140,11 @@ fi
 
 #preparing destination image url based on given inputs
 if [[ (! -z "$IMAGE_REGISTRY") && ( ! -z "$IMAGE_REGISTRY_ORG" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
+   echo "[INFO] preparing destination image url using below variables as per given by the user"
+   echo "[INFO] IMAGE_REGISTRY=$IMAGE_REGISTRY"
+   echo "[INFO] IMAGE_REGISTRY_ORG=$IMAGE_REGISTRY_ORG"
+   echo "[INFO] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
+   echo "[INFO] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
    destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
    destination_image_url_with_latest_tagname=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:latest
 else
