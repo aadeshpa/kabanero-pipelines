@@ -26,6 +26,7 @@ fi
 
 # Publish images to image registry
 # export IMAGE_REGISTRY_PUBLISH=false
+# export UTILS_IMAGE_REGISTRY_PUBLISH=false
 
 # Credentials for publishing images:
 # export IMAGE_REGISTRY
