@@ -124,7 +124,7 @@ replace_image_url() {
    
 #setting up the utils image tagname as TRAVIS_TAG in case it is not empty, which is during Travis automation step.
 # In other cases UTILS_IMAGE_TAG will be exported from env.sh file.
-if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) && (! -z "$TRAVIS_TAG") ]]; then
+if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) && (! -z "$TRAVIS_TAG") ]]; then
    echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
    UTILS_IMAGE_TAG=$TRAVIS_TAG
 fi
@@ -153,7 +153,7 @@ else
    exit 1
 fi
 
-if [[ ( "$IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
+if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "[INFO] Publishing a new utils container image" 
    
    #Login to the registry if the username and password are present
