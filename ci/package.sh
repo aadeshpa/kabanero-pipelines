@@ -122,27 +122,32 @@ replace_image_url() {
 
 #Start
    
+#setting the Utils image name as Default image name in case it is empty or not provided from env.sh
+if [ -z "$UTILS_IMAGE_NAME" ]; then
+   UTILS_IMAGE_NAME=$DEFAULT_IMAGE_NAME
+fi
 #setting up the utils image tagname as TRAVIS_TAG in case it is not empty, which is during Travis automation step.
 # In other cases UTILS_IMAGE_TAG will be exported from env.sh file.
 if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) && (! -z "$TRAVIS_TAG") ]]; then
    echo "Travis_tag variable is not empty TRAVIS_TAG=$TRAVIS_TAG"
    UTILS_IMAGE_TAG=$TRAVIS_TAG
 fi
-
 #setting default option to build image as docker. If you need to run the script with Buildah option, update USE_BUILDAH=true in env.sh
 if [[ ( -z "$USE_BUILDAH" ) ]]; then
    USE_BUILDAH = false
 fi
-
 #preparing destination image url based on given inputs
 if [[ (! -z "$IMAGE_REGISTRY") && ( ! -z "$IMAGE_REGISTRY_ORG" ) && ( ! -z "$UTILS_IMAGE_NAME" ) && ( ! -z "$UTILS_IMAGE_TAG" ) ]]; then
-   echo "[INFO] preparing destination image url using below variables as per given by the user"
+   echo "[INFO] Preparing destination utils image url using below variables as per given by the user"
    echo "[INFO] IMAGE_REGISTRY=$IMAGE_REGISTRY"
    echo "[INFO] IMAGE_REGISTRY_ORG=$IMAGE_REGISTRY_ORG"
    echo "[INFO] UTILS_IMAGE_NAME=$UTILS_IMAGE_NAME"
-   echo "[INFO] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"
+   echo "[INFO] UTILS_IMAGE_TAG=$UTILS_IMAGE_TAG"   
    destination_image_url=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:$UTILS_IMAGE_TAG
+   echo "[INFO] Concatenated destination utils image urls are as below"
+   echo "[INFO] destination_image_url=$destination_image_url" 
    destination_image_url_with_latest_tagname=$IMAGE_REGISTRY/$IMAGE_REGISTRY_ORG/$UTILS_IMAGE_NAME:latest
+   echo "[INFO] destination_image_url_with_latest_tagname=$destination_image_url_with_latest_tagname" 
 else
    echo "[ERROR] Image url cannot be formed ,one or more of the environment variables IMAGE_REGISTRY,IMAGE_REGISTRY_USERNAME, UTILS_IMAGE_NAME or UTILS_IMAGE_TAG are empty, please provide correct envrionment variables for image registry and image details for building the image and try again."
    echo "[ERROR] IMAGE_REGISTRY=$IMAGE_REGISTRY"
@@ -152,7 +157,6 @@ else
    sleep 1
    exit 1
 fi
-
 if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
    echo "[INFO] Publishing a new utils container image" 
    
@@ -167,11 +171,11 @@ if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
       fi       
    fi
    # navigating to the folder where the utils container docker file is present
-   cd ./pipelines/docker/kabanero-utils/              
+   cd ./pipelines/docker/pipelines-utils/              
    
    if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
    
-      echo "Building the utils container image using USE_BUILDAH=$USE_BUILDAH"
+      echo "[INFO] Building the utils container image using USE_BUILDAH=$USE_BUILDAH"
               
       buildah bud -t $destination_image_url -t $destination_image_url_with_latest_tagname .
       if [ $? == 0 ]; then
@@ -182,7 +186,7 @@ if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          buildah push $destination_image_url docker://$destination_image_url
          if [ $? == 0 ]; then
             echo "[INFO] The buildah container image $destination_image_url was successfully pushed"
-            buildah push $destination_image_url_with_latest_tagname docker://$destination_image_url_with_latest_tagname
+            buildah push $destination_image_url_with_latest_tagname docker://$destination_image_url_with_latest_tagname     
          else
             echo "[ERROR] The buildah container image push failed for this image $destination_image_url, please check the logs"
             sleep 1
@@ -213,7 +217,7 @@ if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
          docker push $destination_image_url
          if [ $? == 0 ]; then
             echo "[INFO] The docker image was successfully pushed to $destination_image_url"
-            docker push $destination_image_url_with_latest_tagname
+            docker push $destination_image_url_with_latest_tagname    
          else
             echo "[ERROR] The docker push failed for this image $destination_image_url, please check the logs"
             sleep 1
@@ -232,7 +236,7 @@ if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
       fetch_image_digest $destination_image_url
    fi  
 else
-   echo "[INFO] We are not publishing new utils container image since IMAGE_REGISTRY_PUBLISH is not set to true "
+   echo "[INFO] We are not publishing new utils container image since UTILS_IMAGE_REGISTRY_PUBLISH is not set to true "
    #calling method to fetch image digest value
    fetch_image_digest $destination_image_url
 fi
