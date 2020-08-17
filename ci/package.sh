@@ -171,7 +171,7 @@ if [[ ( "$UTILS_IMAGE_REGISTRY_PUBLISH" == true ) ]]; then
       fi       
    fi
    # navigating to the folder where the utils container docker file is present
-   cd ./pipelines/docker/pipelines-utils/              
+   cd ./pipelines/docker/kabanero-utils/              
    
    if [[ ( ! -z "$USE_BUILDAH" ) && ( "$USE_BUILDAH" == true ) ]]; then
    
